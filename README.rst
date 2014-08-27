@@ -259,8 +259,9 @@ This is the beginning of the applications dict, and, we have defined one topic, 
 
 .. code:: python
 
-    # send_on_accept determines whether to send an additional accept/success message upon successfully
-    # receiving an SMS. NOTE: this will result in two return messages per inbound message
+    # send_on_accept determines whether to send an additional accept/success message upon
+    # successfully receiving an SMS.
+    # NOTE: this will result in two return messages per inbound message
     'send_on_accept': False,
     # global accept (success) and error messages for your app
     'accept_response': 'Great, we\'ll get right back to you.',
@@ -275,16 +276,16 @@ Next we have **validators**:
 
 .. code:: python
 
-            # key/value pairs for application-specific validators and their responses if a
-            # message fails to pass validation.
-            # Define your custom validators here. If you wish to change the response message
-            # of a default validator, you can do that here.
-            'validators': {
-                'profanity': 'You kiss your mother with that mouth? No profanity, please.',
-                'length': 'Your message exceeded the maximum allowable character limit (or was empty). \
-                    Please try again .',
-                'parseable': 'Please only use alphanumeric and punctuation characters.'
-            },
+    # key/value pairs for application-specific validators and their responses if a
+    # message fails to pass validation.
+    # Define your custom validators here. If you wish to change the response message
+    # of a default validator, you can do that here.
+    'validators': {
+        'profanity': 'You kiss your mother with that mouth? No profanity, please.',
+        'length': 'Your message exceeded the maximum allowable character limit (or was empty). \
+            Please try again .',
+        'parseable': 'Please only use alphanumeric and punctuation characters.'
+    },
 
 **profanity**, **length**, and **parseable** are the default validators for your app. To omit any one of these, comment out or
 remove the item from the application's validators definition. Changing the message will change the return message sent to
