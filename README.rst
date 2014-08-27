@@ -67,26 +67,25 @@ Here's what the my_app.py file (created by running ``pyrowire-init``) looks like
 
 .. code:: python
 
-    import pyrowire.app.pyrowire as pyro
+    import pyrowire
     import my_settings
 
-    # wire up the pyrowire app, and use your settings file, created by pyrowire-init
-    pyro.wire(settings=my_settings)
+    pyrowire.configure(settings=my_settings)
 
-    # all app.handler methods need to be annotated with the topic for which they process
+    # all app.processor methods need to be annotated with the topic for which they process
     # and take one kwarg, 'message_data'
-    @pyro.handler(topic='my_topic')
-    def my_handler(message_data=None):
+    @pyrowire.handler(topic='my_topic')
+    def my_processor(message_data=None):
         pass
 
-    # all app.validator methods need to be annotated with the name of the validator
+    # all pyro.filter methods need to be annotated with the name of the filter
     # and take one kwarg, 'message_data'
-    @pyro.validator(name='my_validator')
-    def my_validator(message_data=None):
+    @pyrowire.validator(name='my_validator')
+    def my_filter(message_data=None):
         pass
 
     if __name__ == '__main__':
-        pyro.run()
+        pyrowire.run()
 
 As you can see, it's rather straightforward; to start out you are given placeholders for both a handler and a validator.
 The handler is where you will write the business logic for your Twilio application, and additional validators can be added
@@ -127,7 +126,7 @@ With ``pyrowire``, the only logic you need to think about (other than optional m
 happens to the message after it's been successfully received.
 
 A handler is just a function that defines the business logic for your application, and is annotated
-``@handler(topic='whatever_topic_it_is_for')``, where 'whatever_topic_its_for' corresponds to a defined topic
+``@pyrowire.handler(topic='whatever_topic_it_is_for')``, where 'whatever_topic_its_for' corresponds to a defined topic
 block in your `settings file <#settings-configuration>`_.
 
 Let's take a look at a very simple handler that just receives an incoming message, randomizes the order, then returns it:
@@ -136,7 +135,7 @@ Let's take a look at a very simple handler that just receives an incoming messag
 
     # all app.handler methods need to be annotated with the topic for which they process
     # and take one kwarg, 'message_data'
-    @pyro.handler(topic='sms_randomizer')
+    @pyrowire.handler(topic='sms_randomizer')
     def my_handler(message_data=None):
         import random
         # randomize the message and save it as 'return_message'
@@ -146,11 +145,11 @@ Let's take a look at a very simple handler that just receives an incoming messag
 
         # send the message data back along with the key of the message body
         # to send to initiate a Twilio SMS reply
-        pyro.sms(data=message_data, key='return_message')
+        pyrowire.sms(data=message_data, key='return_message')
 
 As you can see, all we need to do to process and return a message is tell a method annotated with
-``@pyro.handler``(topic='my_topic_name')``  what to do with the message data that is received from the pyrowire app
-worker, then send it using ``pyro.sms`` method.  To use this method, we pass both the message_data dict object,
+``@pyrowire.handler``(topic='my_topic_name')``  what to do with the message data that is received from the pyrowire app
+worker, then send it using ``pyrowire.sms`` method.  To use this method, we pass both the message_data dict object,
 as well as the key we want ``pyrowire`` to use to return a message to its sender.
 
 Message Validators
@@ -164,7 +163,7 @@ Message Validators
 
 You can define a validator function easily:
 
-1. In your app file, use the ``@validator`` annotation to designate a validator as something that a message needs to be validated against.
+1. In your app file, use the ``@pyrowire.validator`` annotation to designate a validator as something that a message needs to be validated against.
 2. Add it to your `settings <#settings-configuration>`__ for the topic that requires that validator.
 
 Let's check it out by creating, say, a validator that requires the word 'yo' be present in all messages:
@@ -173,14 +172,14 @@ Let's check it out by creating, say, a validator that requires the word 'yo' be 
 
     # all app.validator methods need to be annotated with the name of the validator
     # and take one kwarg, 'message_data'
-    @pyro.validator(name='must_include_yo')
+    @pyrowire.validator(name='must_include_yo')
     def must_include_yo(message_data=None):
         import re.search
         return not re.search(r'*yo*', message_data['message'].lower())
 
-By using the ``@pyro.validator`` annotation, any twilio applications you define in `your configuration file <#settings-configuration>`__
+By using the ``@pyrowire.validator`` annotation, any twilio applications you define in `your configuration file <#settings-configuration>`__
 that require the validator 'must\_include\_yo' will have to pass this validator in addition to the three defaults. By convention,
-the name of the method should match the name passed into the ``@pyro.validator`` decorator, but it doesn't have to.
+the name of the method should match the name passed into the ``@pyrowire.validator`` decorator, but it doesn't have to.
 
 Overriding Validators
 ~~~~~~~~~~~~~~~~~~~~~
@@ -192,8 +191,8 @@ If you want to change the validator's behavior, just define it again:
 
 .. code:: python
 
-    # profanity validator that considers 'reaver' to be the only bad word in the universe
-    @app.validator
+    # profanity validator that considers 'reaver' to be the only bad word in the verse
+    @pyrowire.validator
     def profanity(message_data=None):
         # just want to omit the f-bomb
         import re.search
@@ -311,13 +310,14 @@ In your handler method, then, you could access this as follows:
 
 Next comes the Twilio section:
 
-.. code:: yaml
+.. code:: python
 
-            twilio:
+            'twilio': {
                 # enter your twilio account SID, auth token, and from number here
-                account_sid: ""
-                auth_token: ""
-                from_number: "+1234567890"
+                'account_sid': ""
+                'auth_token': ""
+                'from_number': "+1234567890"
+            }
 
 which is where you enter your Twilio account information: SID, auth token, and from number. You can get these from your
 Twilio account, at `Twilio's website <http://twilio.com>`__. If you don't have an account, setting it up is easy,
@@ -325,10 +325,10 @@ and you can even use it in a trial mode to get started.
 
 Lastly in the applications section is this:
 
-.. code:: yaml
+.. code:: python
 
             # the default max length for a message per twilio is 160 chars, but you can set this anything under that.
-            max_message_length: 160
+            'max_message_length': 160
 
 By default, Twilio will break up any message longer than 160 characters to segments of 160, so that is the default
 starting point for ``pyrowire``. Technically, you can send messages up to 1600 characters.
@@ -340,54 +340,59 @@ Profiles are what ``pyrowire`` uses to determine environment-specific details su
 The default pyrowire\_config.yaml file includes profiles for three standard environments: ``dev``, ``staging``, and
 ``prod``. Let's take a look at one of those, ``dev``:
 
-.. code:: yaml
+.. code:: python
 
-
-    # application stuff here ...
-     profiles:
-        dev:
-          debug: True
-          redis:
-            host: "localhost"
-            port: 6379
-            database: 0
-            password: ""
-          host: "localhost"
-          port: 5000
+    PROFILES = {
+        'dev': {
+            'debug': True,
+            'log_level': logging.DEBUG,
+            'redis': {
+                'host': 'localhost',
+                'port': 6379,
+                'db': 0,
+                'password': ''
+            },
+            'host': 'localhost',
+            'port': 5000
+        }
 
 Breaking it down into smaller chunks:
 
-.. code:: yaml
+.. code:: python
 
-    profiles:
-        dev:
-          debug: True
+    PROFILES = {
+        'dev': {
+          'debug': True
 
-The profiles block is defined by the key ``profiles``. So novel. One
+The profiles block is defined by the key ``PROFILES``. So original. One
 level down is the keyword ``dev`` indicating the beginning of the dev
 profile settings.
 
 The first setting in the block is ``debug``, which is stored as a
 boolean. Next comes the Redis block:
 
-.. code:: yaml
+.. code:: python
 
-        redis:
-            host: "localhost"
-            port: 6379
-            database: 0
-            password: ""
+        'redis': {
+            'host': 'localhost',
+            'port': 6379,
+            'database': 0,
+            'password': ''
+        }
 
 First you have the standard Redis connection properties, ``host``, ``port``, ``database``, and \`\ ``password``. This
 should be pretty straightforward...just add your connection details in this section. By default all profiles connect to
-localhost, over the standard Redis port, default database, with no password.
+localhost, over the standard Redis port, default database, with no password. If a password is provided, it will be used,
+but ignored otherwise.
 
 Lastly, we have hostname and port information for where the underlying Flask application will run:
 
-.. code:: yaml
+.. code:: python
 
-        host: "localhost"
-        port: 5000
+        # set to '0.0.0.0' for Heroku deployment so pyrowire listens on all interfaces
+        'host': 'localhost',
+        # set to 0 for Heroku deployment so pyrowire can pick up the environment var $PORT
+        'port': 5000
 
 Heroku-specific host settings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -405,9 +410,8 @@ place. Time to run ``pyrowire``. Here's what you need to know.
 Environment vars
 ~~~~~~~~~~~~~~~~
 
-``pyrowire`` requires two environment vars to be present when running:
+``pyrowire`` requires one environment var to be present when running locally:
 
-- **PYRO\_CONFIG**: the path to your config file
 - **ENV**: the run profile (DEV\|STAGING\|PROD) under which you want to run ``pyrowire``
 
 For running on Heroku, there are two additional environment vars required:
@@ -424,7 +428,7 @@ Once you have your handler, optional additional validator(s), and configuration 
 
 ::
 
-    PYRO_CONFIG=./pyro_config.yaml ENV=DEV python my_app.py
+    ENV=DEV python my_app.py
 
 This will spin up a worker for your topic(s), and a web server running on localhost:5000 to handle incoming messages.
 After that, you can start sending it GET/POST requests using your tool of choice. You won't be able to use Twilio for
@@ -468,55 +472,43 @@ where an SMS shuffler is created to randomize incoming text messages and send th
 
 Appendix A: Definition of Terms
 -------------------------------
-
-Application
-~~~~~~~~~~~
-"Application" in the scope of ``pyrowire`` has two meanings:
-#. The ``pyrowire`` application in its entirety - config, handlers, validators (less common)
-#. A Twilio application (more common). Identified by a ``topic``. ``pyrowire`` can operate on many different Twilio applications.
-For all intents and purposes, ``application``, in this sense, is interchangeable with ``topic``.
-
-Config, Configuration
-~~~~~~~~~~~~~~~~~~~~~
-Refers to the YAML file that is used to define application behavior, API key information, and environment profile settings.
-
-Validator
-~~~~~~
-A validator is another fundamental building block of ``pyrowire``. Validators are responsible for validating incoming messages, and
-unlike handlers, are optional. Validators have a many-to-one relationship with applications.
-
-Validators can be added to any application by creating a method annotated with
-``@pyro.validator(name='some_validator_name')`` and adding that validator as a key/value member of the application's ``validators``
-set in your ``pyrowire_config.yaml`` file.
-
-Each validator added to an application should have a corresponding message, e.g, 'must_say_yo': 'You got to say "yo", yo!'
-
 Handler
-^^^^^^^^^
+~~~~~~~
 A handler is one of the fundamental building blocks of ``pyrowire``. It is responsible for the business logic performed for
 an application, and determines how ``pyrowire`` will respond to an inbound message via Twilio's REST API. Applications and
 handlers have a unique one-to-one relationship.
 
-Handlers can be added by annotating a method with ``@pyro.handler(topic='some_topic_name'), where 'some_topic_name'
+Handlers can be added by annotating a method with ``@pyrowire.handler(topic='some_topic_name'), where 'some_topic_name'
 corresponds to an application to be handled by ``pyrowire``.
+
+Validator
+~~~~~~~~~
+A validator is another fundamental building block of ``pyrowire``. Validators are responsible for validating incoming messages, and
+unlike handlers, are optional. Validators have a many-to-one relationship with applications.
+
+Validators can be added to any application by creating a method annotated with
+``@pyrowire.validator(name='some_validator_name')`` and adding that validator as a key/value member of the application's ``validators``
+set in your ``pyrowire_config.yaml`` file.
+
+Each validator added to an application should have a corresponding message, e.g, 'must_say_yo': 'You got to say "yo", yo!'
 
 Appendix B: Command Reference
 -----------------------------
 A reference for the most commonly-used methods in creating a ``pyrowire`` app.
 
-PyroApp
-~~~~~~~
-New PyroApp instances are created with a standard Python constructor, and no arguments:
+pyrowire.configure(settings=None)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+A new pyrowire app can be configured using the pyrowire.configure() method, which takes one kwarg, ``settings``.
 
 .. code:: python
 
-    pyro = PyroApp()
+    import my_settings
+    pyrowire.configure(settings=my_settings)
 
-Note handler and validator annotations will use whatever name is given to the PyroApp instance you create.
 
-PyroApp.sms(data=None, key=None)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-To return an SMS back to its sender, you will use the PyroApp.sms method, which takes two kwargs:
+pyrowire.sms(data=None, key=None)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To return an SMS back to its sender, you will use the pyrowire.sms method, which takes two kwargs:
 
 #. ``data``: the message_data (dict) that was initially passed to the handler method
 #. ``key``: the key for the dict that contains the processed message to return to the sender.
@@ -526,21 +518,21 @@ Example:
 .. code:: python
 
     message_data = {'message': 'Original SMS from sender', 'number': '+1234567890', 'final_message': 'Right back at ya.'}
-    pyro.sms(data=message_data, key='final_message')
+    pyrowire.sms(data=message_data, key='final_message')
 
-PyroApp.run()
-~~~~~~~~~~~~~
-Runs the PyroApp instance. Depending on environment variables, will do one of three things:
+pyrowire.run()
+~~~~~~~~~~~~~~
+Runs the pyrowire application. Depending on environment variables, will do one of three things:
 #. If RUN environment variable is not present, will start a worker process for each topic defined in your configuration file,
 then start a web server to receive inbound messages.
 #. If the RUN environment variable is present, and set to ``web``, will start a web server process to receive inbound messages.
 #. If the RUN environment variable is present, and set to ``worker``, will start a worker process to process messages once received and queued.
 
-Handlers
-~~~~~~~~~~
+Using Handlers
+~~~~~~~~~~~~~~
 Handlers can be named whatever you prefer, but must satisfy three requirements:
 
-#. They must be annotated with ``@app.handler``
+#. They must be annotated with ``@pyrowire.handler``
 #. The annotation must be passed a kwarg, ``topic``, and should be set equal to the topic/application for which it is intended to process messages.
 #. The handler function itself must take one kwarg, ``message_data``, and should be set to ``None`` as a default.
 
@@ -548,19 +540,20 @@ Example:
 
 .. code:: python
 
-    my_cool_pyro_app = PyroApp()
+    import my_settings
+    pyrowire.configure(settings=my_settings)
 
-    @my_cool_pyro_app.handler(topic='my_cool_topic')
+    @pyrowire.handler(topic='my_cool_topic')
     def my_cool_handler(message_data=None):
         message_data['final'] = message_data['message']
         my_cool_pyro_app.sms(data=message_data, key='final')
 
 
-Validators
-~~~~~~~
+Using Validators
+~~~~~~~~~~~~~~~~
 Validators, too, can be named whatever you prefer, but must satisfy three requirements:
 
-#. They must be annotated with ``@app.validator``
+#. They must be annotated with ``@pyrowire.validator``
 #. The annotation must be passed one kwarg, ``name``, and should be set to the name of the validator as entered in your configuration
     file for the application that requires it.
 #. The validator function itself must take one kwarg, ``message_data``, and should be set to ``None`` as a default.
@@ -569,14 +562,14 @@ Example:
 
 .. code:: python
 
-    my_pyro = PyroApp()
+    import my_settings
+    pyrowire.configure(settings=my_settings)
 
-    # handler method here...
-
-    @my_pyro.validator(name='my_validator')
+    @pyrowire.validator(name='my_validator')
     def some_validator(message_data=None):
+        import re
         # returns True if message does not contain the substring 'yo'
-        return 'yo' not in message_data['message']
+        return not re.search(r'\byo\b', message_data['message'].lower())
 
 
 Appendix C: Under the Hood
