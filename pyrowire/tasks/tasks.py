@@ -8,26 +8,25 @@ from redis import Redis
 from redis.exceptions import ConnectionError, TimeoutError
 
 from pyrowire.resources.settings import *
+import pyrowire.config.configurator as config
 
-def process_queue_item(topic=None, profile=None, handler=None, persist=True):
+def process_queue_item(topic=None, persist=True):
     """
     method that block pops items from a redis queue and processes them according to the defined processor for the topic.
     default behavior is persistent, i.e., will run as long as the worker is alive.
     :param topic: string, the topic for which to process queue items
-    :param profile: profile settings for worker
-    :param handler: the twilio app message handler
     :param persist: boolean, default=True, whether to keep the process alive indefinitely
     :return: implicit None if persistent, explicit None if not persistent
     """
 
-    log_level = profile['log_level'] or logging.DEBUG
+    log_level = config.profile()['log_level'] or logging.DEBUG
     logging.basicConfig(level=log_level)
     logger = logging.getLogger(__name__)
 
-    redis = Redis(profile['redis']['host'],
-                  profile['redis']['port'],
-                  profile['redis']['db'],
-                  profile['redis']['password'])
+    redis = Redis(config.profile()['redis']['host'],
+                  config.profile()['redis']['port'],
+                  config.profile()['redis']['db'],
+                  config.profile()['redis']['password'])
     job_data = None
     job_uuid = None
 
@@ -41,7 +40,7 @@ def process_queue_item(topic=None, profile=None, handler=None, persist=True):
                 # insert the record for this job into the pending queue for this topic
                 redis.hset('%s.%s' % (topic, 'pending'), uuid, json.dumps(job_data))
                 # attempt to process the message
-                handler(message_data=job_data)
+                config.handler(topic)(message_data=job_data)
                 # add job to complete queue and remove from pending queue
                 redis.hdel('%s.%s' % (topic, 'pending'),
                            job_uuid)
