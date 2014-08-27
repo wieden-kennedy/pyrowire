@@ -2,7 +2,7 @@ import os
 
 PYROWIRE = None
 
-def pyro_init(settings, flask):
+def configure(settings, flask):
     """
     sets up the global PYROWIRE object, containing all of the settings needed to run pyrowire.
     :param settings: the settings module that should be used to parse the settings
