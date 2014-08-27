@@ -18,12 +18,12 @@ Contents
 - `Installation <#1-minute-installation-and-setup>`_
 - `Usage <#usage>`_
 - `Sample Application <#sample-application>`_
-- `One Instance, Many Applications <#one-instance-many-applications>`_
+- `One Instance, Many Topics <#one-instance-many-topics>`_
 - `Handlers <#handlers>`_
 - `Message Validators <#message-validators>`_
 - `Overriding Validators <#overriding-validators>`_
 - `App Configuration <#setting-up-a-configuration>`_
-- `Applications <#applications>`_
+- `Topics <#topics>`_
 - `Profiles <#profiles>`_
 - `Heroku-specific Host Settings <#heroku-specific-host-settings>`_
 - `Running the app <#running-pyrowire>`_
@@ -98,8 +98,8 @@ Once you have those, there are three steps to configuring your app:
 3. `configure your settings <#settings-configuration>`_
 
 
-One Instance, Many Applications
--------------------------------
+One Instance, Many Topics
+-------------------------
 
 ``pyrowire`` uses a topic-based approach to handling incoming messages. One ``pyrowire`` instance can scale to handle
 many, many different Twilio SMS applications, and separates logic for each by the use of topics. Each topic is
@@ -204,30 +204,32 @@ Once you've got your validators and handlers set up, you'll need to dial in your
 for its configuration files. To check out the sample settings file, look
 `here <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/my_settings.py>`_. pyrowire's configuration files are broken down into two sections:
 
-- **Applications** (Twilio application-specific settings). There can be as many of these blocks as needed.
+- **Topics** (Twilio application-specific settings). The Topics block can have as many topic dictionaries are are needed.
 - **Profiles** (environment profile-specific settings). There is one block per run environment *(DEV/STAGING/PROD)*
 
-Applications
-~~~~~~~~~~~~
-
-To start out, here's what the application section of a ``pyrowire`` settings file looks like:
+Topics
+~~~~~~
+To start out, here's what the topic section of a ``pyrowire`` settings file looks like:
 
 .. code:: python
 
-    APPLICATIONS = {
+    TOPICS = {
         'my_topic': {
-            # send_on_accept determines whether to send an additional accept/success message upon successfully
-            # receiving an SMS. NOTE: this will result in two return messages per inbound message
+            # send_on_accept determines whether to send an additional accept/success
+            # message upon successfully receiving an SMS.
+            # NOTE: this will result in two return messages per inbound message
             'send_on_accept': False,
             # global accept (success) and error messages for your app
             'accept_response': 'Great, we\'ll get right back to you.',
-            'error_response': 'It seems like an error has occurred...please try again later.',
-            # key/value pairs for application-specific validators and their responses if a message fails to pass validation.
-            # Define your custom validators here. If you wish to change the response message of a default validator,
-            # you can do that here.
+            'error_response': 'It seems like an error has occurred...please try again.',
+            # key/value pairs for application-specific validators and their responses
+            # if a message fails to pass validation.
+            # Define your custom validators here. If you wish to change the response message
+            # of a default validator, you can do that here.
             'validators': {
                 'profanity': 'You kiss your mother with that mouth? No profanity, please.',
-                'length': 'Your message exceeded the maximum allowable character limit (or was empty). Please try again .',
+                'length': 'Your message exceeded the maximum allowable character limit \
+                    (or was empty). Please try again .',
                 'parseable': 'Please only use alphanumeric and punctuation characters.'
             },
             # properties are any non-pyrowire-specific properties that you will need to
@@ -250,19 +252,19 @@ Let's break that down a bit.
 
 .. code:: python
 
-    APPLICATIONS = {
+    TOPICS = {
         'my_topic': {
 
-This is the beginning of the applications dict, and, we have defined one topic, ``my\_topic``. Next, we have:
+This is the beginning of the applications dict, and, we have defined one topic, ``my_topic``. Next, we have:
 
 .. code:: python
 
-            # send_on_accept determines whether to send an additional accept/success message upon successfully
-            # receiving an SMS. NOTE: this will result in two return messages per inbound message
-            'send_on_accept': False,
-            # global accept (success) and error messages for your app
-            'accept_response': 'Great, we\'ll get right back to you.',
-            'error_response': 'It seems like an error has occurred...please try again later.',
+    # send_on_accept determines whether to send an additional accept/success message upon successfully
+    # receiving an SMS. NOTE: this will result in two return messages per inbound message
+    'send_on_accept': False,
+    # global accept (success) and error messages for your app
+    'accept_response': 'Great, we\'ll get right back to you.',
+    'error_response': 'It seems like an error has occurred...please try again later.',
 
 -  **send\_on\_accept** enables or disables your app from actually sending a reply message immediately after the incoming
 SMS was successfully accepted. Setting this to ``False`` will prevent your app from sending two return messages for every one it receives.
@@ -273,12 +275,14 @@ Next we have **validators**:
 
 .. code:: python
 
-            # key/value pairs for application-specific validators and their responses if a message fails to pass validation.
-            # Define your custom validators here. If you wish to change the response message of a default validator,
-            # you can do that here.
+            # key/value pairs for application-specific validators and their responses if a
+            # message fails to pass validation.
+            # Define your custom validators here. If you wish to change the response message
+            # of a default validator, you can do that here.
             'validators': {
                 'profanity': 'You kiss your mother with that mouth? No profanity, please.',
-                'length': 'Your message exceeded the maximum allowable character limit (or was empty). Please try again .',
+                'length': 'Your message exceeded the maximum allowable character limit (or was empty). \
+                    Please try again .',
                 'parseable': 'Please only use alphanumeric and punctuation characters.'
             },
 
@@ -442,12 +446,12 @@ host setting should be ``0.0.0.0`` and the port setting for your profile should 
 We won't get deep into how to deploy to Heroku here, since it isn't really in the scope of this document, but the basics
 are:
 
-#. Set up a Heroku application with at least one web dyno and at least one worker
-#. Set up a Redis database on an external server, through a service, or as an add-on
+#. Set up a Heroku application with at least one web dyno and at least one worker.
+#. Set up a Redis database as a Heroku add-on, such as RedisToGo or RedisCloud, through a service, such as RedisLabs, or on an external server.
 #. Add the Redis host, port, database, and password information to your config file for Staging and/or Production profiles.
-#. Add the heroku remote git endpoint to your project (``git remote add heroku.com:my-heroku-app.git``)
+#. Add the heroku remote git endpoint to your project (``git remote add heroku.com:my-heroku-app.git``).
 #. Push the project up to heroku and let it spin up.
-#. Add the remote endpoint to your Twilio account number (e.g., for SMS: ``http://my-heroku-app.herokuapp.com/queue/my_topic``)
+#. Add the remote endpoint to your Twilio account number (e.g., for SMS: ``http://my-heroku-app.herokuapp.com/queue/my_topic``).
 #. Profit.
 
 Heroku Procfile
