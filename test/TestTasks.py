@@ -3,14 +3,14 @@ import json
 import unittest
 from multiprocessing import Process
 
-from pyrowire import pyrowire
-from pyrowire.decorators.decorators import handler
-import pyrowire.tasks.tasks as tasks
-import pyrowire.config.configurator as config
-import pyrowire.runner.runner as runner
-import pyrowire.messaging.sms as sms
-
 from redis import Redis
+
+from pyrowire import pyrowire
+import pyrowire.config.configurator as config
+from pyrowire.decorators.decorators import handler
+import pyrowire.messaging.sms as sms
+import pyrowire.runner.runner as runner
+import pyrowire.tasks.tasks as tasks
 from test import test_settings
 
 

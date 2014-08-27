@@ -2,8 +2,8 @@ import os
 import unittest
 
 from pyrowire import pyrowire as pyro
-from test import test_settings
 import pyrowire.config.configurator as config
+from test import test_settings
 
 class TestConfigurator(unittest.TestCase):
 
