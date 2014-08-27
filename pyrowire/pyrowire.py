@@ -3,10 +3,10 @@ from flask import Flask
 import config.configuration as config
 import runner.runner as runner
 from validators.validators import profanity, parseable, length
-from routes.queue_message import message_queue
+from routes.queue_message import queue_message
 
 FLASK = Flask(__name__, static_url_path='/static')
-FLASK.register_blueprint(message_queue, url_prefix='/queue')
+FLASK.register_blueprint(queue_message, url_prefix='/queue')
 
 # configure - the setup method
 # ----------------------------------------------------------------------------------------------------------------------

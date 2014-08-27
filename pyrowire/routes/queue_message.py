@@ -13,10 +13,10 @@ from pyrowire.messaging.message import message_from_request
 from pyrowire.messaging.sms import sms
 
 
-message_queue = Blueprint('message_queue', __name__)
+queue_message = Blueprint('message_queue', __name__)
 
-@message_queue.route('/<topic>', methods=['GET', 'POST'])
-def queue_message(topic):
+@queue_message.route('/<topic>', methods=['GET', 'POST'])
+def queue(topic):
     """
     takes inbound request from Twilio API and parses out:
       - From (mobile number of sender)
