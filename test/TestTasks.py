@@ -6,7 +6,7 @@ from multiprocessing import Process
 from redis import Redis
 
 from pyrowire import pyrowire
-import pyrowire.config.configurator as config
+import pyrowire.config.configuration as config
 from pyrowire.decorators.decorators import handler
 import pyrowire.messaging.sms as sms
 import pyrowire.runner.runner as runner

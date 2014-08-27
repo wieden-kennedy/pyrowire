@@ -1,2 +1,2 @@
 __author__ = 'keith.hamilton'
-from configurator import *
+from configuration import *

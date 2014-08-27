@@ -3,7 +3,7 @@ import unittest
 from redis import Redis
 
 from pyrowire import pyrowire as pyro
-from pyrowire.config import configurator as config
+from pyrowire.config import configuration as config
 from test import test_settings
 
 

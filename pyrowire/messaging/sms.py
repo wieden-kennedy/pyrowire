@@ -2,7 +2,7 @@ import logging
 
 from twilio.rest import TwilioRestClient
 
-import pyrowire.config.configurator as config
+import pyrowire.config.configuration as config
 
 
 # Twilio methods - SMS

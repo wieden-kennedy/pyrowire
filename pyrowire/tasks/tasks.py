@@ -7,7 +7,7 @@ import uuid
 from redis import Redis
 from redis.exceptions import ConnectionError, TimeoutError
 
-import pyrowire.config.configurator as config
+import pyrowire.config.configuration as config
 from pyrowire.resources.settings import *
 
 def process_queue_item(topic=None, persist=True):

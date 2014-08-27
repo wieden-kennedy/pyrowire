@@ -1,7 +1,7 @@
 import os
 from multiprocessing import Process
 
-import pyrowire.config.configurator as config
+import pyrowire.config.configuration as config
 from pyrowire.tasks.tasks import process_queue_item
 
 # run, server, work

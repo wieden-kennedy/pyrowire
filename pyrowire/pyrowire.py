@@ -9,7 +9,7 @@ from redis import Redis
 from redis.exceptions import ConnectionError, TimeoutError
 import twilio.twiml as twiml
 
-import config.configurator as config
+import config.configuration as config
 from messaging.sms import sms
 from messaging.message import message_from_request
 import resources.settings as pyro_settings
@@ -27,7 +27,7 @@ def configure(settings=pyro_settings):
     so the underlying flask application can have access to it when a message hits the main route
     :param settings: the settings.py file that configures the application
     """
-    config.pyro_init(settings, flask=FLASK)
+    config.configure(settings, flask=FLASK)
     config.add_validator(profanity)
     config.add_validator(parseable)
     config.add_validator(length)
