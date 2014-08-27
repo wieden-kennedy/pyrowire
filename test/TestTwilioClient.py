@@ -8,7 +8,7 @@ pyro.configure(settings=test_settings)
 
 class TestTwilioClient(unittest.TestCase):
     def test_twilio(self):
-        _job_data = {'message':'Test', 'final_message': 'TestTestTest', 'number': '+15039280913', 'topic':'sample'}
+        _job_data = {'message': 'Test', 'final_message': 'TestTestTest', 'number': '+15039280913', 'topic':'sample'}
         success = pyro.sms(data=_job_data, key='final_message')
         self.assertTrue(success)
 
