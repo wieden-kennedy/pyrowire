@@ -50,10 +50,10 @@ Contents
 
 | This will install ``pyrowire``, and copy into the root folder the following files:
 
-* `my\_app.py <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/sample/my_app.py>`_ (the application file)
-* `my\_settings.py <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/sample/my_settings.py>`_ (the configuration file)
-* `Procfile <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/sample/Procfile>`_ (a Heroku Procfile)
-* `requirements.txt <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/sample/requirements.txt>`_ (pip requirements file)
+* `my\_app.py <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/my_app.py>`_ (the application file)
+* `my\_settings.py <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/my_settings.py>`_ (the configuration file)
+* `Procfile <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/Procfile>`_ (a Heroku Procfile)
+* `requirements.txt <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/requirements.txt>`_ (pip requirements file)
 
 Usage
 -----
@@ -202,7 +202,7 @@ Settings configuration
 
 Once you've got your validators and handlers set up, you'll need to dial in your config file. ``pyrowire`` uses a python file for settings configuration.
 for its configuration files. To check out the sample settings file, look
-`here <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/sample/my_settings.py>`_. pyrowire's configuration files are broken down into two sections:
+`here <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/my_settings.py>`_. pyrowire's configuration files are broken down into two sections:
 
 - **Applications** (Twilio application-specific settings). There can be as many of these blocks as needed.
 - **Profiles** (environment profile-specific settings). There is one block per run environment *(DEV/STAGING/PROD)*
