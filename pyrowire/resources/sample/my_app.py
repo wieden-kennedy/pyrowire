@@ -1,7 +1,5 @@
 import pyrowire
-
-# instantiate the PyroApp object. No parameters required.
-from pyrowire.resources.sample import my_settings
+import my_settings
 
 pyrowire.configure(settings=my_settings)
 
