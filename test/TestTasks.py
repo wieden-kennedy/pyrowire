@@ -3,21 +3,24 @@ import json
 import unittest
 from multiprocessing import Process
 
-from pyrowire import pyrowire as pyro
-from pyrowire.decorators import handler
-import pyrowire.tasks as pyroworker
+from pyrowire import pyrowire
+from pyrowire.decorators.decorators import handler
+import pyrowire.tasks.tasks as tasks
 import pyrowire.config.configurator as config
+import pyrowire.runner.runner as runner
+import pyrowire.messaging.sms as sms
+
 from redis import Redis
 from test import test_settings
 
 
-pyro.configure(settings=test_settings)
+pyrowire.configure(settings=test_settings)
 topic = 'sample'
 
 @handler(topic=topic)
 def my_processor(message_data=None):
     message_data['final_data'] = message_data['message']
-    Process(target=pyro.sms, kwargs={'data': message_data, 'key': 'final_data'}).start()
+    Process(target=sms.sms, kwargs={'data': message_data, 'key': 'final_data'}).start()
 
 class TestTasks(unittest.TestCase):
 
@@ -44,10 +47,7 @@ class TestTasks(unittest.TestCase):
         self.redis.rpush('%s.%s' % (self.topic, 'submitted'), json.dumps(_message))
         # process task
         _message_handler = config.handler(self.topic)
-        _uuid = pyroworker.process_queue_item(self.topic,
-                                              profile=config.profile(),
-                                              handler=_message_handler,
-                                              persist=False)
+        _uuid = tasks.process_queue_item(self.topic, persist=False)
         # expect result in completed queue
         _pending = self.redis.hget('%s.%s' % (self.topic, 'pending'), _uuid)
         _complete = ast.literal_eval(self.redis.hget('%s.%s' % (self.topic, 'complete'), _uuid))
@@ -63,7 +63,7 @@ class TestTasks(unittest.TestCase):
         _message = {'message': 'You are strong in the ways of the Force.', 'number': '+1234567890', 'topic':'sample'}
         self.redis.rpush('%s.%s' % (self.topic, 'submitted'), json.dumps(_message))
         # process task
-        _uuid = pyro.work(topic=self.topic, persist=False)
+        _uuid = runner.work(topic=self.topic, persist=False)
 
         # expect result in completed queue
         _pending = self.redis.hget('%s.%s' % (self.topic, 'pending'), _uuid)
