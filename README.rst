@@ -523,7 +523,8 @@ Example:
 
 .. code:: python
 
-    message_data = {'message': 'Original SMS from sender', 'number': '+1234567890', 'final_message': 'Right back at ya.'}
+    message_data = {'message': 'Original SMS from sender', 'number': '+1234567890',
+                    'final_message': 'Right back at ya.'}
     pyrowire.sms(data=message_data, key='final_message')
 
 pyrowire.run()
