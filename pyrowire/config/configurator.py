@@ -18,9 +18,9 @@ def pyro_init(settings, flask):
     }
 # Utility - Application getters
 #-----------------------------------------------------------------------------------------------------------------------
-def applications(topic=None):
+def topics(topic=None):
     if topic:
-        return PYROWIRE['topics']['topic']
+        return PYROWIRE['topics'][topic]
     return PYROWIRE['topics']
 
 def validators(topic=None):
