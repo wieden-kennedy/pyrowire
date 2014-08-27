@@ -49,7 +49,7 @@ def process_queue_item(topic=None, persist=True):
         except (ConnectionError, TimeoutError, IndexError, TypeError, KeyError), e:
             # if the error was not a redis connection or timeout error, log the error to redis
             # if the log to redis fails, let it go
-            if type(e).__name__ in ['KeyError', 'TypeError']:
+            if type(e) in [KeyError, TypeError]:
                 try:
                     timestamp = time.time()
                     date_timestamp = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')

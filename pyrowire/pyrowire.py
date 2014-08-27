@@ -82,12 +82,12 @@ def queue_message(topic):
     except (ConnectionError, TimeoutError, KeyError, TypeError) as e:
         # if the error was not a redis connection or timeout error, log the error to redis
         # if the log to redis fails, let it go
-        if type(e).__name__ in ['KeyError', 'TypeError']:
+        if type(e) in [KeyError, TypeError]:
             try:
-                _timestamp = time.time()
-                _date_timestamp = datetime.fromtimestamp(_timestamp).strftime('%Y-%m-%d %H:%M:%S')
-                _error = {'message': message, 'error': str(e)}
-                redis.hset('%s.error' % topic, _date_timestamp, _error)
+                timestamp = time.time()
+                date_timestamp = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+                error = {'message': message, 'error': str(e)}
+                redis.hset('%s.error' % topic, date_timestamp, error)
             except:
                 pass
         # log the error and return the topic's error response
