@@ -18,6 +18,7 @@ from validators.validators import profanity, parseable, length
 
 
 FLASK = Flask(__name__, static_url_path='/static')
+LOGGER = None
 
 # wire - the setup method
 # ----------------------------------------------------------------------------------------------------------------------
@@ -32,8 +33,9 @@ def configure(settings=pyro_settings):
     config.add_validator(parseable)
     config.add_validator(length)
 
+    global LOGGER
     logging.basicConfig(level=config.log_level())
-    logging.getLogger(__name__)
+    LOGGER = logging.getLogger(__name__)
 
 # Flask routes
 # ----------------------------------------------------------------------------------------------------------------------
@@ -91,7 +93,7 @@ def queue_message(topic):
             except:
                 pass
         # log the error and return the topic's error response
-        g.LOGGER.error(e)
+        LOGGER.error(e)
         response.message(config.error_response(topic))
         return str(response)
 
