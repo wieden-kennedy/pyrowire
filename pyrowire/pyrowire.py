@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask
 
 import config.configuration as config
 import runner.runner as runner
