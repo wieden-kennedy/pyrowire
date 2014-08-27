@@ -15,7 +15,7 @@ def init():
 
     copied_files = []
     # copy all files from sample folder
-    for f in [x for x in os.listdir(source_path) if not re.match(r'^\.|^_', x)]:
+    for f in [x for x in os.listdir(source_path) if not re.match(r'^\.|^_|.*pyc$', x)]:
         shutil.copy(os.path.join(source_path, file), os.path.join(current_path, f))
         copied_files.append(f)
 
