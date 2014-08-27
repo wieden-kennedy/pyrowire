@@ -332,7 +332,8 @@ Lastly in the applications section is this:
 
 .. code:: python
 
-            # the default max length for a message per twilio is 160 chars, but you can set this anything under that.
+            # the default max length for a single message segment, per twilio, is 160 chars
+            # but you can set this anything under 1600.
             'max_message_length': 160
 
 By default, Twilio will break up any message longer than 160 characters to segments of 160, so that is the default
