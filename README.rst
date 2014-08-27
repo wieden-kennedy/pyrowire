@@ -282,7 +282,7 @@ Next we have **validators**:
     # of a default validator, you can do that here.
     'validators': {
         'profanity': 'You kiss your mother with that mouth? No profanity, please.',
-        'length': ''Your message exceeded the maximum allowable character limit' + \
+        'length': 'Your message exceeded the maximum allowable character limit' + \
                             '(or was empty). Please try again .',
         'parseable': 'Please only use alphanumeric and punctuation characters.'
     },
