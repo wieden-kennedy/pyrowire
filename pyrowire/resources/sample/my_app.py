@@ -1,6 +1,7 @@
 import pyrowire
 import my_settings
 
+# configure the pyrowire application
 pyrowire.configure(settings=my_settings)
 
 # all app.processor methods need to be annotated with the topic for which they process
