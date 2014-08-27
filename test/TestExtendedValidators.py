@@ -3,7 +3,7 @@ import unittest
 from pyrowire import pyrowire as pyro
 from redis import Redis
 from test import test_settings
-from pyrowire.decorators import *
+from pyrowire.decorators.decorators import *
 
 app = pyro.configure(settings=test_settings)
 
