@@ -8,7 +8,7 @@ Fast Twilio SMS message response API
 After installing ``pyrowire``, all you have to do is decide what you want to do with the data that comes in to your
 web server. We've got the rest covered.
 
-**This is a condensed version of the full README, found `here <https://github.com/wieden-kennedy/pyrowire>`_.
+**This is a condensed version of the full README, found `here <https://github.com/wieden-kennedy/pyrowire>`_
 For more details, please view the full README.**
 
 License Info
