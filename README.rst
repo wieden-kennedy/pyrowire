@@ -213,6 +213,7 @@ Applications
 To start out, here's what the application section of a ``pyrowire`` settings file looks like:
 
 .. code:: python
+
     APPLICATIONS = {
         'my_topic': {
             # send_on_accept determines whether to send an additional accept/success message upon successfully
