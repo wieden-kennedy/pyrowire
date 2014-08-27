@@ -1,6 +1,5 @@
 from datetime import datetime
 import json
-import logging
 from multiprocessing import Process
 import time
 
@@ -12,30 +11,29 @@ import twilio.twiml as twiml
 import config.configuration as config
 from messaging.sms import sms
 from messaging.message import message_from_request
-import resources.settings as pyro_settings
 import runner.runner as runner
 from validators.validators import profanity, parseable, length
 
-
 FLASK = Flask(__name__, static_url_path='/static')
-LOGGER = None
 
-# wire - the setup method
+# configure - the setup method
 # ----------------------------------------------------------------------------------------------------------------------
-def configure(settings=pyro_settings):
+def configure(settings=None):
     """
     wires up pyrowire application dict, as well as logger, and makes them available to the global scope,
     so the underlying flask application can have access to it when a message hits the main route
     :param settings: the settings.py file that configures the application
+    :raises TypeError if settings is NoneType
     """
+    if not settings:
+        raise TypeError('Settings cannot be null.')
+
     config.configure(settings, flask=FLASK)
     config.add_validator(profanity)
     config.add_validator(parseable)
     config.add_validator(length)
 
-    global LOGGER
-    logging.basicConfig(level=config.log_level())
-    LOGGER = logging.getLogger(__name__)
+    FLASK.logger.setLevel(config.log_level())
 
 # Flask routes
 # ----------------------------------------------------------------------------------------------------------------------
@@ -93,11 +91,11 @@ def queue_message(topic):
             except:
                 pass
         # log the error and return the topic's error response
-        LOGGER.error(e)
+        FLASK.logger.log(e)
         response.message(config.error_response(topic))
         return str(response)
 
-
 if __name__ == '__main__':
-    configure(settings=pyro_settings)
+    import resources.settings
+    configure(settings=resources.settings)
     runner.run()
