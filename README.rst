@@ -194,9 +194,8 @@ If you want to change the validator's behavior, just define it again:
     # profanity validator that considers 'reaver' to be the only bad word in the verse
     @pyrowire.validator
     def profanity(message_data=None):
-        # just want to omit the f-bomb
         import re.search
-        return re.search(r'*reaver*', message_data['message'].lower())
+        return re.search(r'\breaver\b', message_data['message'].lower())
 
 Settings configuration
 ----------------------
