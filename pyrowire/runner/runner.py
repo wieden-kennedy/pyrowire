@@ -19,7 +19,7 @@ def run():
             assert 'TOPIC' in os.environ.keys(), "You must provide a topic as an env var (TOPIC=my_topic)"
             work(topic=os.environ['TOPIC'])
     else:
-        for topic in config.applications().keys():
+        for topic in config.topics().keys():
             Process(target=work, kwargs={'topic': topic}).start()
         Process(target=server).run()
 
@@ -38,4 +38,4 @@ def work(topic=None, persist=True):
    :param persist: boolean, mainly for testing. if persist is False, the worker will exit the process after
                    one pass. In production mode, this should always be True, and True is what it defaults to.
    """
-    return process_queue_item(topic=topic, profile=config.profile(), handler=config.handler(topic), persist=persist)
+    return process_queue_item(topic=topic, persist=persist)
