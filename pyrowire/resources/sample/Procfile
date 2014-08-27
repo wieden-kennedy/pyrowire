@@ -1,0 +1,3 @@
+web: PYRO_CONFIG=./pyrowire_config.yaml ENV=STAGING RUN=web python ./my_app.py --server run_gunicorn 0.0.0.0:$PORT --workers=1
+worker: PYRO_CONFIG=./pyrowire_config.yaml ENV=STAGING RUN=worker TOPIC=my_topic python ./my_app.py
+

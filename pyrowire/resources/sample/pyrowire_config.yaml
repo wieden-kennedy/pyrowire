@@ -1,0 +1,54 @@
+---
+  applications:
+    my_topic:
+      # these are global accept (success) and error messages for your app
+      send_on_accept: False
+      accept_response: "Great, we'll get right back to you."
+      error_response: "It seems an error has occurred...please try again later."
+      filters:
+        # define your specific filters here. If you change one of the below messages, you don't need to do anything else.
+        # if you want to add one, you will need to implement a @filter method in my_app.py
+        profanity: "You kiss your mother with that mouth? No profanity, please."
+        length: "Your message exceeded the maximum allowable character limit (or was empty). Please try again."
+        parseable: "Please only use alphanumeric and punctuation characters. No emoji!"
+        # my_filter: "Placeholder message for template filter in my_app.py"
+      properties:
+        # add in any additional properties, such as API keys for other services, here
+      twilio:
+        # enter your twilio account SID, auth token, and from number here
+        account_sid: ""
+        auth_token: ""
+        from_number: "+1234567890"
+      # the default max length for a message per twilio is 160 chars, but you can set this anything under that.
+      max_message_length: 160
+  profiles:
+    dev:
+      debug: True
+      redis:
+        host: "localhost"
+        port: 6379
+        database: 0
+        password: ""
+      host: "localhost"
+      port: 5000
+    staging:
+      debug: True
+      redis:
+        host: "localhost"
+        port: 6379
+        database: 0
+        password: ""
+      host: "0.0.0.0"
+      # set port to 0 for Heroku
+      port: 0
+    prod:
+      debug: False
+      redis:
+        host: "localhost"
+        port: 6379
+        database: 0
+        password: ""
+      host: "0.0.0.0"
+      # set port to 0 for Heroku
+      port: 0
+
