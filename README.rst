@@ -224,12 +224,12 @@ To start out, here's what the topic section of a ``pyrowire`` settings file look
             'error_response': 'It seems like an error has occurred...please try again.',
             # key/value pairs for application-specific validators and their responses
             # if a message fails to pass validation.
-            # Define your custom validators here. If you wish to change the response message
-            # of a default validator, you can do that here.
+            # Define your custom validators here, or change the message
+            # for an existing validator.
             'validators': {
                 'profanity': 'You kiss your mother with that mouth? No profanity, please.',
-                'length': 'Your message exceeded the maximum allowable character limit \
-                    (or was empty). Please try again .',
+                'length': 'Your message exceeded the maximum allowable character limit' + \
+                            '(or was empty). Please try again .',
                 'parseable': 'Please only use alphanumeric and punctuation characters.'
             },
             # properties are any non-pyrowire-specific properties that you will need to
