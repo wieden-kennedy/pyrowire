@@ -1,7 +1,7 @@
 import itertools
 
-from pyrowire.resources import profanity as profanity_terms
 import pyrowire.config as config
+from pyrowire.resources import profanity as profanity_terms
 
 # default validators
 # ----------------------------------------------------------------------------------------------------------------------
