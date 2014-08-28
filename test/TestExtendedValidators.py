@@ -31,24 +31,24 @@ class TestExtendedValidators(unittest.TestCase):
         self.redis.delete('%s.completed' % self.topic)
 
     def test_no_yo(self):
-        _expected_response = config.validators(self.topic)['must_say_yo']
-        _message = 'Keith Hamilton'
-        _response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890' % (self.topic, _message), follow_redirects=True)
+        expected_response = config.validators(self.topic)['must_say_yo']
+        message = 'Keith Hamilton'
+        response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890' % (self.topic, message), follow_redirects=True)
 
-        _data = str(_response.data).split('<Body>')[1].split('</Body>')[0]
+        data = str(response.data).split('<Body>')[1].split('</Body>')[0]
 
-        self.assertEqual(_response.status, "200 OK")
-        self.assertEqual(_data, _expected_response)
+        self.assertEqual(response.status, "200 OK")
+        self.assertEqual(data, expected_response)
 
     def test_yo_present(self):
-        _expected_response = config.accept_response(self.topic)
-        _message = 'yo, Keith!'
-        _response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890' % (self.topic, _message), follow_redirects=True)
+        expected_response = config.accept_response(self.topic)
+        message = 'yo, Keith!'
+        response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890' % (self.topic, message), follow_redirects=True)
 
-        _data = str(_response.data).split('<Body>')[1].split('</Body>')[0]
+        data = str(response.data).split('<Body>')[1].split('</Body>')[0]
 
-        self.assertEqual(_response.status, "200 OK")
-        self.assertEqual(_data, _expected_response)
+        self.assertEqual(response.status, "200 OK")
+        self.assertEqual(data, expected_response)
 
 if __name__ == '__main__':
     unittest.main()

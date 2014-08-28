@@ -43,37 +43,36 @@ class TestTasks(unittest.TestCase):
 
     def test_sample_task(self):
         # queue task
-        _message = {'message': 'You are strong in the ways of the Force.', 'number': '+1234567890', 'topic':'sample'}
-        self.redis.rpush('%s.%s' % (self.topic, 'submitted'), json.dumps(_message))
+        message = {'message': 'You are strong in the ways of the Force.', 'number': '+1234567890', 'topic':'sample'}
+        self.redis.rpush('%s.%s' % (self.topic, 'submitted'), json.dumps(message))
         # process task
-        _message_handler = config.handler(self.topic)
-        _uuid = tasks.process_queue_item(self.topic, persist=False)
+        uuid = tasks.process_queue_item(self.topic, persist=False)
         # expect result in completed queue
-        _pending = self.redis.hget('%s.%s' % (self.topic, 'pending'), _uuid)
-        _complete = ast.literal_eval(self.redis.hget('%s.%s' % (self.topic, 'complete'), _uuid))
+        pending = self.redis.hget('%s.%s' % (self.topic, 'pending'), uuid)
+        complete = ast.literal_eval(self.redis.hget('%s.%s' % (self.topic, 'complete'), uuid))
 
-        self.assertIsNone(_pending)
-        self.assertIsNotNone(_complete)
-        self.assertEqual(_complete['number'], '+1234567890')
-        self.assertTrue('final_data' in _complete)
-        self.assertEqual(_complete['final_data'], _complete['message'])
+        self.assertIsNone(pending)
+        self.assertIsNotNone(complete)
+        self.assertEqual(complete['number'], '+1234567890')
+        self.assertTrue('final_data' in complete)
+        self.assertEqual(complete['final_data'], complete['message'])
 
     def test_pyro_work(self):
         # queue task
-        _message = {'message': 'You are strong in the ways of the Force.', 'number': '+1234567890', 'topic':'sample'}
-        self.redis.rpush('%s.%s' % (self.topic, 'submitted'), json.dumps(_message))
+        message = {'message': 'You are strong in the ways of the Force.', 'number': '+1234567890', 'topic':'sample'}
+        self.redis.rpush('%s.%s' % (self.topic, 'submitted'), json.dumps(message))
         # process task
-        _uuid = runner.work(topic=self.topic, persist=False)
+        uuid = runner.work(topic=self.topic, persist=False)
 
         # expect result in completed queue
-        _pending = self.redis.hget('%s.%s' % (self.topic, 'pending'), _uuid)
-        _complete = ast.literal_eval(self.redis.hget('%s.%s' % (self.topic, 'complete'), _uuid))
+        pending = self.redis.hget('%s.%s' % (self.topic, 'pending'), uuid)
+        complete = ast.literal_eval(self.redis.hget('%s.%s' % (self.topic, 'complete'), uuid))
 
-        self.assertIsNone(_pending)
-        self.assertIsNotNone(_complete)
-        self.assertEqual(_complete['number'], '+1234567890')
-        self.assertTrue('final_data' in _complete)
-        self.assertEqual(_complete['final_data'], _complete['message'])
+        self.assertIsNone(pending)
+        self.assertIsNotNone(complete)
+        self.assertEqual(complete['number'], '+1234567890')
+        self.assertTrue('final_data' in complete)
+        self.assertEqual(complete['final_data'], complete['message'])
 
 
 if __name__ == '__main__':
