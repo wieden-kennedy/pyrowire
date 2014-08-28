@@ -8,12 +8,9 @@ from routes.queue_message import queue_message
 FLASK = Flask(__name__, static_url_path='/static')
 FLASK.register_blueprint(queue_message, url_prefix='/queue')
 
-# configure - the setup method
-# ----------------------------------------------------------------------------------------------------------------------
 def configure(settings=None):
     """
-    wires up pyrowire application dict, as well as logger, and makes them available to the global scope,
-    so the underlying flask application can have access to it when a message hits the main route
+    wires up configuration for pyrowire app, sets Flask logging level to level from config settings
     :param settings: the settings.py file that configures the application
     :raises TypeError if settings is NoneType
     """
