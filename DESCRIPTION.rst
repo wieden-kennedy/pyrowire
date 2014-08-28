@@ -154,7 +154,7 @@ for its configuration files. To check out the sample settings file, look
 - **Applications** (Twilio application-specific settings). There can be as many of these blocks as needed.
 - **Profiles** (environment profile-specific settings). There is one block per run environment *(DEV/STAGING/PROD)*
 
-Topics
+Topicst p
 ~~~~~~
 Here's what the application section of a ``pyrowire`` config file looks like:
 
