@@ -32,7 +32,8 @@ def length(message_data=None):
     :return: boolean, whether the message is within the tolerated length
     """
     max_length = config.max_message_length(message_data['topic'])
-    return len(message_data['message']) == 0 or max_length < len(message_data['message'])
+    return (len(message_data['message']) == 0 or max_length < len(message_data['message'])) and \
+           len(message_data['message']) <= 1600
 
 def parseable(message_data=None):
     """
