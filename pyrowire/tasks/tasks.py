@@ -19,16 +19,13 @@ def process_queue_item(topic=None, persist=True):
     :return: implicit None if persistent, explicit None if not persistent
     """
 
-    log_level = config.profile()['log_level'] or logging.DEBUG
+    log_level = config.log_level() or logging.DEBUG
     logging.basicConfig(level=log_level)
     logger = logging.getLogger(__name__)
 
-    redis = Redis(config.profile()['redis']['host'],
-                  config.profile()['redis']['port'],
-                  config.profile()['redis']['db'],
-                  config.profile()['redis']['password'])
+    redis = Redis(config.redis('host'), config.redis('port'), config.redis('db'), config.redis('password'))
     job_data = None
-    job_uuid = None
+    job_sid = None
 
     while True:
         try:
@@ -36,16 +33,16 @@ def process_queue_item(topic=None, persist=True):
             # if job_data was found, i.e., there was an item in queue, proceed. If not, wait for the next one
             if job_data:
                 job_data = json.loads(job_data)
-                job_uuid = str(uuid.uuid4())
+                job_sid = job_data['sid']
                 # insert the record for this job into the pending queue for this topic
                 redis.hset('%s.%s' % (topic, 'pending'), uuid, json.dumps(job_data))
                 # attempt to process the message
                 config.handler(topic)(message_data=job_data)
                 # add job to complete queue and remove from pending queue
                 redis.hdel('%s.%s' % (topic, 'pending'),
-                           job_uuid)
+                           job_sid)
                 redis.hset('%s.%s' % (topic, 'complete'),
-                           job_uuid, json.dumps(job_data))
+                           job_sid, json.dumps(job_data))
         except (ConnectionError, TimeoutError, IndexError, TypeError, KeyError), e:
             # if the error was not a redis connection or timeout error, log the error to redis
             # if the log to redis fails, let it go
@@ -60,4 +57,4 @@ def process_queue_item(topic=None, persist=True):
             logger.error(e)
 
         if not persist:
-            return job_uuid
+            return job_sid

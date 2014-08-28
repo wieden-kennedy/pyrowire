@@ -1,5 +1,7 @@
 import ast
 import json
+import random
+import string
 import unittest
 from multiprocessing import Process
 
@@ -43,13 +45,15 @@ class TestTasks(unittest.TestCase):
 
     def test_sample_task(self):
         # queue task
-        message = {'message': 'You are strong in the ways of the Force.', 'number': '+1234567890', 'topic':'sample'}
+        sid = ''.join(random.choice(string.ascii_letters) for i in range(34))
+        message = {'message': 'You are strong in the ways of the Force.', 'number': '+1234567890',
+                   'sid': sid, 'topic': 'sample'}
         self.redis.rpush('%s.%s' % (self.topic, 'submitted'), json.dumps(message))
         # process task
-        uuid = tasks.process_queue_item(self.topic, persist=False)
+        actual_sid = tasks.process_queue_item(self.topic, persist=False)
         # expect result in completed queue
-        pending = self.redis.hget('%s.%s' % (self.topic, 'pending'), uuid)
-        complete = ast.literal_eval(self.redis.hget('%s.%s' % (self.topic, 'complete'), uuid))
+        pending = self.redis.hget('%s.%s' % (self.topic, 'pending'), actual_sid)
+        complete = ast.literal_eval(self.redis.hget('%s.%s' % (self.topic, 'complete'), actual_sid))
 
         self.assertIsNone(pending)
         self.assertIsNotNone(complete)
@@ -59,14 +63,16 @@ class TestTasks(unittest.TestCase):
 
     def test_pyro_work(self):
         # queue task
-        message = {'message': 'You are strong in the ways of the Force.', 'number': '+1234567890', 'topic':'sample'}
+        sid = ''.join(random.choice(string.ascii_letters) for i in range(34))
+        message = {'message': 'You are strong in the ways of the Force.', 'number': '+1234567890',
+                   'sid': sid, 'topic': 'sample'}
         self.redis.rpush('%s.%s' % (self.topic, 'submitted'), json.dumps(message))
         # process task
-        uuid = runner.work(topic=self.topic, persist=False)
+        actual_sid = runner.work(topic=self.topic, persist=False)
 
         # expect result in completed queue
-        pending = self.redis.hget('%s.%s' % (self.topic, 'pending'), uuid)
-        complete = ast.literal_eval(self.redis.hget('%s.%s' % (self.topic, 'complete'), uuid))
+        pending = self.redis.hget('%s.%s' % (self.topic, 'pending'), actual_sid)
+        complete = ast.literal_eval(self.redis.hget('%s.%s' % (self.topic, 'complete'), actual_sid))
 
         self.assertIsNone(pending)
         self.assertIsNotNone(complete)

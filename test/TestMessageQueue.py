@@ -25,8 +25,10 @@ class TestMessageQueue(unittest.TestCase):
 
     def test_profane_message(self):
         expected_response = config.validators(self.topic)['profanity']
+        sid = ''.join(random.choice(string.ascii_letters) for i in range(34))
         message = 'fuck'
-        response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890' % (self.topic, message), follow_redirects=True)
+        response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890&MessageSid=%s' % (self.topic, message, sid),
+                                     follow_redirects=True)
 
         data = str(response.data).split('<Body>')[1].split('</Body>')[0]
 
@@ -35,8 +37,10 @@ class TestMessageQueue(unittest.TestCase):
 
     def test_message_too_long(self):
         message = ''.join(random.choice(string.ascii_letters) for i in range(161))
+        sid = ''.join(random.choice(string.ascii_letters) for i in range(34))
         expected_response = config.validators(self.topic)['length']
-        response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890' % (self.topic, message), follow_redirects=True)
+        response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890&MessageSid=%s' % (self.topic, message, sid),
+                                     follow_redirects=True)
 
         data = str(response.data).split('<Body>')[1].split('</Body>')[0]
 
@@ -45,8 +49,10 @@ class TestMessageQueue(unittest.TestCase):
         
     def test_message_exceeds_twilio_maximum_length(self):
         message = ''.join(random.choice(string.ascii_letters) for i in range(1600))
+        sid = ''.join(random.choice(string.ascii_letters) for i in range(34))
         expected_response = config.validators(self.topic)['length']
-        response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890' % (self.topic, message), follow_redirects=True)
+        response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890&MessageSid=%s' % (self.topic, message, sid),
+                                     follow_redirects=True)
 
         data = str(response.data).split('<Body>')[1].split('</Body>')[0]
 
@@ -56,7 +62,9 @@ class TestMessageQueue(unittest.TestCase):
     def test_message_zero_length(self):
         expected_response = config.validators(self.topic)['length']
         message = ''
-        response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890' % (self.topic, message), follow_redirects=True)
+        sid = ''.join(random.choice(string.ascii_letters) for i in range(34))
+        response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890&MessageSid=%s' % (self.topic, message, sid),
+                                     follow_redirects=True)
 
         data = str(response.data).split('<Body>')[1].split('</Body>')[0]
 
@@ -66,7 +74,9 @@ class TestMessageQueue(unittest.TestCase):
     def test_message_not_parseable(self):
         expected_response = config.validators(self.topic)['parseable']
         message = '%F0%9F%98%AC'
-        response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890' % (self.topic, message), follow_redirects=True)
+        sid = ''.join(random.choice(string.ascii_letters) for i in range(34))
+        response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890&MessageSid=%s' % (self.topic, message, sid),
+                                     follow_redirects=True)
 
         data = str(response.data).split('<Body>')[1].split('</Body>')[0]
 
@@ -75,9 +85,11 @@ class TestMessageQueue(unittest.TestCase):
 
     def test_good_message(self):
         messages = ['Frank', 'Joe Bob', 'Mary Kate ']
+        sid = ''.join(random.choice(string.ascii_letters) for i in range(34))
         expected_response = config.accept_response(self.topic)
         for n in messages:
-            response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890' % (self.topic, n), follow_redirects=True)
+            response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890&MessageSid=%s' % (self.topic, n, sid),
+                                         follow_redirects=True)
 
             data = str(response.data).split('<Body>')[1].split('</Body>')[0]
 

@@ -8,10 +8,8 @@ def message_from_request(req=None, topic=None):
     :param topic: the topic for which the message has been sent
     :return: message, a dict object of the message data
     """
-    # if request method is 'GET', use request args
-    if req.method == 'GET':
-        message = {'message': req.args['Body'], 'number': req.args['From'], 'topic': topic}
-    # if request method is 'POST', use request form
-    else:
-        message = {'message': req.form['Body'], 'number': req.form['From'], 'topic': topic}
+    # queue endpoint only accepts 'GET' and 'POST' so safe from not checking for other method types
+    # if request method is 'GET', use request args else use req.form
+    req_data = req.args if req.method == 'GET' else req.form
+    message = {'message': req_data['Body'], 'number': req_data['From'], 'sid': req_data['MessageSid'], 'topic': topic}
     return message
