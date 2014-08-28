@@ -20,6 +20,7 @@ Contents
 - `Sample Application <#sample-application>`_
 - `One Instance, Many Topics <#one-instance-many-topics>`_
 - `Handlers <#handlers>`_
+- `Sending a Message <#sending-a-message>`_
 - `Message Validators <#message-validators>`_
 - `Overriding Validators <#overriding-validators>`_
 - `App Configuration <#setting-up-a-configuration>`_
@@ -34,8 +35,9 @@ Contents
 - `Sample Application - SMS Randomizer <#full-sample-application>`_
 - `Appendix A: Definition of Terms <#appendix-a-definition-of-terms>`_
 - `Appendix B: Command Reference <#appendix-b-command-reference>`_
-- `Appendix C: Under the Hood <#appendix-c-under-the-hood>`_
-- `Appendix D: Pull Requests <#appendix-d-pull-requests>`_
+- `Appendix C: The Anatomy of a pyrowire Message <#appendix-c-the-anatomy-of-a-pyrowire-message>`_
+- `Appendix D: Under the Hood <#appendix-c-under-the-hood>`_
+- `Appendix E: Pull Requests <#appendix-d-pull-requests>`_
 
 
 1-Minute Installation and Setup
@@ -152,6 +154,80 @@ As you can see, all we need to do to process and return a message is tell a meth
 worker, then send it using ``pyrowire.sms`` method.  To use this method, we pass both the message_data dict object,
 as well as the key we want ``pyrowire`` to use to return a message to its sender.
 
+Sending a Message
+-----------------
+``pyrowire`` supports sending both SMS and MMS, both using a very simple syntax. Currently, to send MMS in the US and UK,
+you need a `shortcode <https://www.twilio.com/sms/shortcodes>`_, but in Canada you can use either a shortcode or a full
+phone number.
+
+Replying with SMS
+~~~~~~~~~~~~~~~~~
+All message objects that you work with will by default have a ``reply`` property,
+which you can populate with the reply message you wish to send back to the original sender. You can also use your own
+key for a message, if you pass it to the ``pyrowire.sms`` method as a kwarg. Let's take a look:
+
+.. code:: python
+
+    @pyrowire.handler(topic='sample')
+    def sample_handler(message_data=None):
+        reply = ''
+        for index, item in enumerate([x for x in message_data['message'].split()]):
+            if index % 2 == 0:
+               reply += ' foo%s' % item
+            else:
+                reply += ' bar%s' % item
+        message_data['reply'] = reply.strip()
+
+        # here's where you send back
+        pyrowire.sms(message_data)
+
+So that's it. Just add ``pyrowire.sms(message_data)`` at the end of your handler, and an SMS will be returned back to
+the original sender with the 'reply' key as the message body.
+
+Replying with MMS
+~~~~~~~~~~~~~~~~~
+``pyrowire`` is rigged up to support MMS as well.
+
+To send an MMS message, you just substitute ``pyrowire.sms`` method with ``pyrowire.mms``.
+
+.. code:: python
+
+    @pyrowire.handler(topic='sample')
+    def random_cat_image(message_data=None):
+        import random
+        import mycats
+        url = random.choice(mycats.images)
+
+        # here's where you send back
+        pyrowire.mms(message_data=message_data, media_url=url)
+
+If you want to include text with the media message, you can do so by setting a reply, and using the ``include_text`` kwarg:
+
+.. code:: python
+
+    @pyrowire.handler(topic='sample')
+    def random_cat_image(message_data=None):
+        import random
+        import mycats
+        url = random.choice(mycats.images)
+        message_data['reply'] = "Meeeeeeeeeowww!"
+
+        # here's where you send back
+        pyrowire.mms(message_data=message_data, include_text=True, media_url=url)
+
+Changing the Reply Key
+~~~~~~~~~~~~~~~~~~~~~~
+If you would like, you can change the reply key from 'reply' to a key of your choice. All you need to do to use it with
+either ``pyrowire.sms`` or ``pyrowire.mms`` is add a kwarg:
+
+.. code:: python
+
+    # for sms
+    pyrowire.sms(message_data=message_data, key='my_custom_key')
+
+    # for mms
+    pyrowire.mms(message_data=message_data, key='my_custom_key', include_text=True, media_url='http://bit.ly/IC394d')
+
 Message Validators
 ------------------
 
@@ -183,7 +259,6 @@ the name of the method should match the name passed into the ``@pyrowire.validat
 
 Overriding Validators
 ~~~~~~~~~~~~~~~~~~~~~
-
 Say you don't care about profanity. It happens. Say you want to override the default profanity validator, to make it
 non-existent—just remove it from your configuration file for the application in question
 (see `Applications <#applications>`__ for more info on removing default validators).
@@ -199,7 +274,6 @@ If you want to change the validator's behavior, just define it again:
 
 Settings configuration
 ----------------------
-
 Once you've got your validators and handlers set up, you'll need to dial in your config file. ``pyrowire`` uses a python file for settings configuration.
 for its configuration files. To check out the sample settings file, look
 `here <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/my_settings.py>`_. pyrowire's configuration files are broken down into two sections:
@@ -579,7 +653,35 @@ Example:
         return not re.search(r'\byo\b', message_data['message'].lower())
 
 
-Appendix C: Under the Hood
+Appendix C: The Anatomy of a pyrowire Message
+---------------------------------------------
+Messages in ``pyrowire``  that are available to you in handlers have the following format (sample data presented):
+
+.. code:: python
+
+    # properties marked with an asterisk are those that Twilio will try to collect,
+    # and will be included in the message_data dictionary if available.
+    message_data = {
+        'message': 'Some message',
+        'number': '+1234567890',
+        'sid': 'ugJCgMZwjxzqGjmrmWhXlyAPbnoTECjEHA',
+        'topic': 'some_topic',
+        'from_country': 'USA',       *
+        'from_state': 'OR',          *
+        'from_city': 'Portland',     *
+        'from_zip': '97209',         *
+        'media': {
+            'count': 1,
+            'media': {
+                'http://bit.ly/Icd34Ox': 'image/jpeg'
+            }
+        }
+    }
+
+Of note here is the media sub-dictionary. If an MMS with attached media was sent, this will be populated with key/value
+pairs of the media URL as well as the media content type. If no media was attached (SMS) this key will be an empty dict.
+
+Appendix D: Under the Hood
 --------------------------
 ``pyrowire`` is built on top of the following:
 
@@ -587,7 +689,7 @@ Appendix C: Under the Hood
 * Twilio REST API - handles communication to and from Twilio
 * Redis - used for queuing, and storing received, pending, and completed message transactions
 
-Appendix D: Pull Requests
+Appendix E: Pull Requests
 -------------------------
 We love the open source community, and we embrace it. If you have a pull request to submit to ``pyrowire``, do it! Just please
 make sure to observe the following guidelines in any additions/updates you wish to merge into the master branch:
