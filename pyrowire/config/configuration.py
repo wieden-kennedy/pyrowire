@@ -10,7 +10,6 @@ def configure(settings, flask):
     """
     global PYROWIRE
     PYROWIRE = {
-        'env': os.environ['ENV'],
         'profile': settings.PROFILES[os.environ['ENV'].lower()],
         'topics': settings.TOPICS,
         'app': flask,
