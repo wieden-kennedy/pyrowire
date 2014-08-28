@@ -11,29 +11,26 @@ class TestConfigurator(unittest.TestCase):
         pyro.configure(settings=test_settings)
 
     def test_configuration(self):
-        self.assertEqual(test_settings.TOPICS, config.topics())
-        self.assertEqual(test_settings.PROFILES[os.environ['ENV'].lower()], config.profile())
+        profile = test_settings.PROFILES[os.environ['ENV'].lower()]
+        topics = test_settings.TOPICS
 
-    # tests not otherwise covered by other test suites
-    def test_topics(self):
-        for t in [k for k in test_settings.TOPICS.keys()]:
-            self.assertEqual(test_settings.TOPICS[t], config.topics(t))
-        self.assertEqual(test_settings.TOPICS, config.topics())
+        # profile
+        self.assertEqual(profile['debug'], config.debug())
+        self.assertEqual(profile['host'], config.host())
+        self.assertEqual(profile['log_level'], config.log_level())
+        self.assertEqual(profile['port'], config.port())
+        self.assertEqual(profile['redis'], config.redis())
+        for key, value in [(k, v) for k, v in profile['redis'].items()]:
+            self.assertEqual(value, config.redis(key))
 
-    def test_properties(self):
+        # topics
+        self.assertEqual(topics, config.topics())
+        for key, value in [(k, v) for k, v in topics.items()]:
+            self.assertEqual(value, config.topics(key))
+
+        # properties
         for t in [k for k in test_settings.TOPICS.keys()]:
             self.assertEqual(test_settings.TOPICS[t]['properties'], config.properties(t))
             for p in [j for j in config.properties(t).keys()]:
                 self.assertEqual(test_settings.TOPICS[t]['properties'][p], config.properties(t,p))
 
-    def test_host(self):
-        self.assertEqual(test_settings.PROFILES[os.environ['ENV'].lower()]['host'], config.host())
-
-    def test_port(self):
-        self.assertEqual(test_settings.PROFILES[os.environ['ENV'].lower()]['port'], config.port())
-
-    def test_redis(self):
-        _redis = test_settings.PROFILES[os.environ['ENV'].lower()]['redis']
-        self.assertEqual(_redis, config.redis())
-        for key in [k for k in _redis.keys()]:
-            self.assertEqual(_redis[key], config.redis(key))

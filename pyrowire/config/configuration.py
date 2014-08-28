@@ -61,8 +61,8 @@ def add_handler(topic=None, handler=None):
 
 # Utility - Profile getters
 # ----------------------------------------------------------------------------------------------------------------------
-def profile():
-    return PYROWIRE['profile']
+def debug():
+    return PYROWIRE['profile']['debug']
 
 def host():
     return PYROWIRE['profile']['host']
