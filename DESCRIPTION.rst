@@ -98,7 +98,7 @@ incoming message, randomizes the order, then saves it:
 
         # send the message data back along with the key of the message body
         # to send to initiate a Twilio SMS reply
-        pyrowire.sms(data=message_data, key='return_message')
+        pyrowire.sms(data=message_data)
 
 As you can see, all we need to do to process and return a message is tell a method annotated with
 ``@pyro.handler``(topic='my_topic_name')`` what to do with the message data that is received from the pyrowire app
@@ -154,26 +154,29 @@ for its configuration files. To check out the sample settings file, look
 - **Applications** (Twilio application-specific settings). There can be as many of these blocks as needed.
 - **Profiles** (environment profile-specific settings). There is one block per run environment *(DEV/STAGING/PROD)*
 
-Applications
-~~~~~~~~~~~~
+Topics
+~~~~~~
 Here's what the application section of a ``pyrowire`` config file looks like:
 
 .. code-block:: python
 
-    APPLICATIONS = {
+    TOPICS = {
         'my_topic': {
-            # send_on_accept determines whether to send an additional accept/success message upon successfully
-            # receiving an SMS. NOTE: this will result in two return messages per inbound message
+            # send_on_accept determines whether to send an additional accept/success
+            # message upon successfully receiving an SMS.
+            # NOTE: this will result in two return messages per inbound message
             'send_on_accept': False,
             # global accept (success) and error messages for your app
             'accept_response': 'Great, we\'ll get right back to you.',
-            'error_response': 'It seems like an error has occurred...please try again later.',
-            # key/value pairs for application-specific validators and their responses if a message fails to pass validation.
-            # Define your custom validators here. If you wish to change the response message of a default validator,
-            # you can do that here.
+            'error_response': 'It seems like an error has occurred...please try again.',
+            # key/value pairs for application-specific validators and their responses
+            # if a message fails to pass validation.
+            # Define your custom validators here, or change the message
+            # for an existing validator.
             'validators': {
                 'profanity': 'You kiss your mother with that mouth? No profanity, please.',
-                'length': 'Your message exceeded the maximum allowable character limit (or was empty). Please try again .',
+                'length': 'Your message exceeded the maximum allowable character limit' + \
+                            '(or was empty). Please try again .',
                 'parseable': 'Please only use alphanumeric and punctuation characters.'
             },
             # properties are any non-pyrowire-specific properties that you will need to
@@ -264,12 +267,12 @@ host setting should be ``0.0.0.0`` and the port setting for your profile should 
 We won't get deep into how to deploy to Heroku here, since it isn't really in the scope of this document, but the basics
 are:
 
-#. Set up a Heroku application with at least one web dyno and at least one worker
-#. Set up a Redis database on an external server, through a service, or as an add-on
+#. Set up a Heroku application with at least one web dyno and at least one worker.
+#. Set up a Redis database as a Heroku add-on, such as RedisToGo or RedisCloud, through a service, such as RedisLabs, or on an external server.
 #. Add the Redis host, port, database, and password information to your config file for Staging and/or Production profiles.
-#. Add the heroku remote git endpoint to your project (``git remote add heroku.com:my-heroku-app.git``)
+#. Add the heroku remote git endpoint to your project (``git remote add heroku.com:my-heroku-app.git``).
 #. Push the project up to heroku and let it spin up.
-#. Add the remote endpoint to your Twilio account number (e.g., for SMS: ``http://my-heroku-app.herokuapp.com/queue/my_topic``)
+#. Add the remote endpoint to your Twilio account number (e.g., for SMS: ``http://my-heroku-app.herokuapp.com/queue/my_topic``).
 #. Profit.
 
 Heroku Procfile
