@@ -17,11 +17,9 @@ def sms(data=None, key=None):
     logging.basicConfig(level=config.log_level())
     logger = logging.getLogger(__name__)
 
-    if not data:
-        logger.error(TypeError("Message data must be provided"))
-        return False
-    if not key:
-        logger.error(TypeError("The key to the reply message must be provided"))
+    if not data or not key:
+        missing = 'data' if not data else 'key'
+        logger.error(TypeError('Message %s must be provided' % missing))
         return False
 
     twilio_config = config.twilio(data['topic'])
