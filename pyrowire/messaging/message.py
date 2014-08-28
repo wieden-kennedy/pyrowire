@@ -8,6 +8,7 @@ def message_from_request(req=None, topic=None):
     :param topic: the topic for which the message has been sent
     :return: message, a dict object of the message data
     """
+    # if request method is 'GET', use request args
     if req.method == 'GET':
         message = {'message': req.args['Body'], 'number': req.args['From'], 'topic': topic}
     # if request method is 'POST', use request form
