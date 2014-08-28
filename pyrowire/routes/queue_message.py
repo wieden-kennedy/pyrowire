@@ -10,7 +10,7 @@ import twilio.twiml as twiml
 
 import pyrowire.config.configuration as config
 from pyrowire.messaging.message import message_from_request
-from pyrowire.messaging.sms import sms
+from pyrowire.messaging.send import sms
 
 
 queue_message = Blueprint('message_queue', __name__)
@@ -26,7 +26,7 @@ def queue(topic):
     response is sent back using twiml based on outcome
     :return: string form of twiml response
     """
-    message = message_from_request(req=request, topic=topic)
+    message = message_from_request(request=request)
     redis = Redis(config.redis('host'), config.redis('port'), config.redis('db'), config.redis('password'))
     response = twiml.Response()
     try:
