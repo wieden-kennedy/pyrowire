@@ -1,3 +1,5 @@
+import random
+import string
 import unittest
 
 from redis import Redis
@@ -19,7 +21,9 @@ class TestExtendedValidators(unittest.TestCase):
     def setUp(self):
         self.test_app = config.app().test_client()
         self.topic = 'sample'
-
+        self.number= '+1234567890'
+        self.sid = ''.join(random.choice(string.ascii_letters) for i in range(34))
+        self.inbound = '/queue/%s?Body=%s&From=%s&MessageSid=%s'
         self.redis = Redis(config.redis('host'),
                            config.redis('port'),
                            config.redis('db'),
@@ -33,7 +37,7 @@ class TestExtendedValidators(unittest.TestCase):
     def test_no_yo(self):
         expected_response = config.validators(self.topic)['must_say_yo']
         message = 'Keith Hamilton'
-        response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890' % (self.topic, message), follow_redirects=True)
+        response = self.test_app.get(self.inbound % (self.topic, message, self.number, self.sid), follow_redirects=True)
 
         data = str(response.data).split('<Body>')[1].split('</Body>')[0]
 
@@ -43,7 +47,7 @@ class TestExtendedValidators(unittest.TestCase):
     def test_yo_present(self):
         expected_response = config.accept_response(self.topic)
         message = 'yo, Keith!'
-        response = self.test_app.get('/queue/%s?Body=%s&From=+1234567890' % (self.topic, message), follow_redirects=True)
+        response = self.test_app.get(self.inbound % (self.topic, message, self.number, self.sid), follow_redirects=True)
 
         data = str(response.data).split('<Body>')[1].split('</Body>')[0]
 

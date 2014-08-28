@@ -10,7 +10,7 @@ from redis import Redis
 from pyrowire import pyrowire
 import pyrowire.config.configuration as config
 from pyrowire.decorators.decorators import handler
-import pyrowire.messaging.sms as sms
+import pyrowire.messaging.send as sms
 import pyrowire.runner.runner as runner
 import pyrowire.tasks.tasks as tasks
 from test import test_settings
