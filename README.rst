@@ -164,7 +164,7 @@ Replying with SMS
 ~~~~~~~~~~~~~~~~~
 All message objects that you work with will by default have a ``reply`` property,
 which you can populate with the reply message you wish to send back to the original sender. You can also use your own
-key for a message, if you pass it to the ``pyrowire.sms`` method as a kwarg. Let's take a look:
+`key for a message <#changing-the-reply-key>`_, if you pass it to the ``pyrowire.sms`` method as a kwarg. Let's take a look:
 
 .. code:: python
 
