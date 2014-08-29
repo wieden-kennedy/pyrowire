@@ -226,7 +226,10 @@ either ``pyrowire.sms`` or ``pyrowire.mms`` is add a kwarg:
     pyrowire.sms(message_data=message_data, key='my_custom_key')
 
     # for mms
-    pyrowire.mms(message_data=message_data, key='my_custom_key', include_text=True, media_url='http://bit.ly/IC394d')
+    pyrowire.mms(message_data=message_data,
+                 key='my_custom_key',
+                 include_text=True,
+                 media_url='http://bit.ly/IC394d')
 
 Message Validators
 ------------------
