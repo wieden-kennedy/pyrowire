@@ -29,7 +29,7 @@ def get_if_available(request_data, key):
     returns a value for the provided key if it exists in request data
     :param request_data: request data where key may exist
     :param key: key to look for
-    :return: value from request data if key exists
+    :return: value from request data if key exists, or dict if key is 'NumMedia'
     """
     if key in request_data.keys():
         # special case, key == 'NumMedia'
