@@ -19,7 +19,7 @@ def message_from_request(request=None):
         'from_state': get_if_available(request_data, 'FromState'),
         'from_country': get_if_available(request_data, 'FromCountry'),
         'from_zip': get_if_available(request_data, 'FromZip'),
-        'media': get_if_media(request_data),
+        'media': get_if_available(request_data, 'NumMedia'),
         'reply': None
     }
     return message
@@ -32,26 +32,14 @@ def get_if_available(request_data, key):
     :return: value from request data if key exists
     """
     if key in request_data.keys():
+        # special case, key == 'NumMedia'
+        # if media was sent with the request, return a dict with the count of media items
+        # as well as a key/value pair of media elements (as url/content_type)
+        if key == 'NumMedia':
+            media = {'count': int(request_data['NumMedia']), 'media': {}}
+            for i in range(media['count']):
+                media['media'][request_data['MediaUrl%s' % i]] = request_data['MediaContentType%s' % i]
+            return media
+        # if key is anything other than 'NumMedia', return its value
         return request_data[key]
     return None
-
-def get_if_media(request_data):
-    """
-    if media was sent along with the request, populate a dictionary object with the count
-    and medial elements (as url/content_type k/v pairs)
-    :param request_data: the request data to check for media
-    :return: dictionary of media included with request
-    """
-    media = {
-        'count': 0,
-        'media': {}
-    }
-    if 'NumMedia' in request_data.keys() and int(request_data['NumMedia']) > 0:
-        media['count'] = int(request_data['NumMedia'])
-        for i in range(media['count']):
-            media_url = request_data['MediaUrl%s' % i]
-            media_type = request_data['MediaContentType%s' % i]
-            media['media'][media_url] = media_type
-
-    return media
-
