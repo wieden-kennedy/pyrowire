@@ -23,7 +23,7 @@ class TestExtendedValidators(unittest.TestCase):
         self.topic = 'sample'
         self.number= '+1234567890'
         self.sid = ''.join(random.choice(string.ascii_letters) for i in range(34))
-        self.inbound = '/queue/%s?Body=%s&From=%s&MessageSid=%s'
+        self.inbound = '/message/%s?Body=%s&From=%s&MessageSid=%s'
         self.redis = Redis(config.redis('host'),
                            config.redis('port'),
                            config.redis('db'),

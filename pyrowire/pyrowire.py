@@ -4,9 +4,11 @@ import config.configuration as config
 import runner.runner as runner
 from validators.validators import profanity, parseable, length
 from routes.queue_message import queue_message
+from routes.voice_call import voice_call
 
 FLASK = Flask(__name__, static_url_path='/static')
-FLASK.register_blueprint(queue_message, url_prefix='/queue')
+FLASK.register_blueprint(queue_message, url_prefix='/message')
+FLASK.register_blueprint(voice_call, url_prefix='/voice')
 
 def configure(settings=None):
     """

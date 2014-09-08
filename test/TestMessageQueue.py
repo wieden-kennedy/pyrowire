@@ -15,7 +15,7 @@ class TestMessageQueue(unittest.TestCase):
     def setUp(self):
         self.test_app = config.app().test_client()
         self.topic = 'sample'
-        self.inbound = '/queue/%s?Body=%s&From=+1234567890&MessageSid=%s&NumMedia=%s'
+        self.inbound = '/message/%s?Body=%s&From=+1234567890&MessageSid=%s&NumMedia=%s'
         self.sid = ''.join(random.choice(string.ascii_letters) for i in range(34))
 
         self.redis = Redis(config.redis('host'), config.redis('port'), config.redis('db'), config.redis('password'))

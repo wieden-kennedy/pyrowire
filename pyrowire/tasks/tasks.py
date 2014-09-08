@@ -2,7 +2,6 @@ from datetime import datetime
 import json
 import logging
 import time
-import uuid
 
 from redis import Redis
 from redis.exceptions import ConnectionError, TimeoutError
@@ -35,7 +34,7 @@ def process_queue_item(topic=None, persist=True):
                 job_data = json.loads(job_data)
                 job_sid = job_data['sid']
                 # insert the record for this job into the pending queue for this topic
-                redis.hset('%s.%s' % (topic, 'pending'), uuid, json.dumps(job_data))
+                redis.hset('%s.%s' % (topic, 'pending'), job_sid, json.dumps(job_data))
                 # attempt to process the message
                 config.handler(topic)(message_data=job_data)
                 # add job to complete queue and remove from pending queue
@@ -52,7 +51,7 @@ def process_queue_item(topic=None, persist=True):
                     date_timestamp = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
                     error = {'message': job_data, 'error': str(e)}
                     redis.hset('%s.error' % topic, date_timestamp, error)
-                except:
+                except (ConnectionError, TimeoutError):
                     pass
             logger.error(e)
 

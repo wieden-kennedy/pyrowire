@@ -16,6 +16,9 @@ TOPICS = {
             'auth_token': '',
             'from_number': '+1234567890'
         },
+        'call_timeout': 10,
+        'call_busy_response': 'The number you have called is currently busy. Please try again later.',
+        'call_error_response': 'Unfortunately an error has occurred. Please try again later.',
         'max_message_length': 160
     }
 }
