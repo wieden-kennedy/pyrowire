@@ -24,6 +24,27 @@ def message_from_request(request=None):
     }
     return message
 
+def call_from_request(request=None):
+    # if request method is 'GET', use request arguments
+    """
+    Utility method to extract relevant call data from inbound message
+    :param request: the flask request object
+    :return: message, a dict object of the message data
+    """
+    # queue endpoint only accepts 'GET' and 'POST' so safe from not checking for other method types
+    # if request method is 'GET', use request args else use request.form
+    request_data = request.args if request.method == 'GET' else request.form
+    message = {
+        'number': request_data['From'],
+        'sid': request_data['Sid'],
+        'phone_number_sid': request_data['PhoneNumberSid'],
+        'topic': request.view_args['topic'],
+        'caller_name': get_if_available(request_data, 'CallerName'),
+        'start_time': get_if_available(request_data, 'StartTime'),
+        'direction': get_if_available(request_data, 'Direction')
+    }
+    return message
+
 def get_if_available(request_data, key):
     """
     returns a value for the provided key if it exists in request data
