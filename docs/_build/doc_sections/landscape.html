@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Application Landscape &mdash; pyrowire 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyrowire 1.0.0 documentation" href="../index.html" />
+    <link rel="next" title="Receiving Messages" href="messages.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="messages.html" title="Receiving Messages"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyrowire 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="application-landscape">
+<h1>Application Landscape<a class="headerlink" href="#application-landscape" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="major-components">
+<h2>Major Components<a class="headerlink" href="#major-components" title="Permalink to this headline">¶</a></h2>
+<p>Four major components are part of the pyrowire application landscape:</p>
+<blockquote>
+<div><ul class="simple">
+<li>a mobile phone</li>
+<li>Twilio service</li>
+<li>Heroku web/worker dynos</li>
+<li>Redis instance (local, RedisCloud, RedisToGo)</li>
+</ul>
+</div></blockquote>
+<img alt="../_images/components.jpg" src="../_images/components.jpg" />
+</div>
+<div class="section" id="distinct-events">
+<h2>Distinct Events<a class="headerlink" href="#distinct-events" title="Permalink to this headline">¶</a></h2>
+<p>The following seven distinct events describe most of what pyrowire is doing. For any further clarification needs, consult the source code.</p>
+<div class="section" id="an-sms-is-sent-to-a-twilio-number-or-shortcode">
+<h3>1. An SMS is sent to a Twilio number or shortcode<a class="headerlink" href="#an-sms-is-sent-to-a-twilio-number-or-shortcode" title="Permalink to this headline">¶</a></h3>
+<img alt="../_images/events_1.jpg" src="../_images/events_1.jpg" />
+<p>During this phase, Twilio&#8217;s service receives an SMS or MMS message at some phone number or shortcode that you have defined
+as pointing at your application endpoint. Twilio constructs a TwiML payload and forwards it to your application in Heroku.</p>
+</div>
+<div class="section" id="your-application-s-web-dyno-receives-the-twiml-message">
+<h3>2. Your application&#8217;s web dyno receives the TwiML message<a class="headerlink" href="#your-application-s-web-dyno-receives-the-twiml-message" title="Permalink to this headline">¶</a></h3>
+<img alt="../_images/events_2.jpg" src="../_images/events_2.jpg" />
+<p>When your application receives a TwiML message, the message is restructured into a python dict containing all of the
+necessary properties to be handled by pyrowire. The message is then run through the validators defined for your topic in
+your settings.py file. If the message passes all validators, it is queued in Redis for a worker to pick up.</p>
+</div>
+<div class="section" id="queueing-the-message-for-your-worker-s">
+<h3>3. Queueing the message for your worker(s)<a class="headerlink" href="#queueing-the-message-for-your-worker-s" title="Permalink to this headline">¶</a></h3>
+<img alt="../_images/events_3.jpg" src="../_images/events_3.jpg" />
+<p>Once validated, messages are queued in Redis for retrieval by your workers. Workers will only ever dequeue messages that
+are assigned to their respective topic.</p>
+</div>
+<div class="section" id="handling-messages">
+<h3>4. Handling messages<a class="headerlink" href="#handling-messages" title="Permalink to this headline">¶</a></h3>
+<img alt="../_images/events_4.jpg" src="../_images/events_4.jpg" />
+<p>This event is where the meat of the application resides. In this event, your worker dyno(s) will pop items off of their
+topic&#8217;s queue, and do whatever you have defined should happen for the messages&#8217; respective topic. For instance, you may</p>
+<blockquote>
+<div>take the noun word parts out of the message and return the first image retrieved by a google image search on those words.
+Once your message handler has finished its work, it will typically sending the message back.</div></blockquote>
+</div>
+<div class="section" id="sending-back-twiml">
+<h3>5. Sending back TwiML<a class="headerlink" href="#sending-back-twiml" title="Permalink to this headline">¶</a></h3>
+<img alt="../_images/events_5.jpg" src="../_images/events_5.jpg" />
+<p>pyrowire has built-in handlers for sending SMS and MMS messages, and it does so by constructing a TwiML message object via
+the Twilio REST API.</p>
+</div>
+<div class="section" id="message-received">
+<h3>6. Message Received<a class="headerlink" href="#message-received" title="Permalink to this headline">¶</a></h3>
+<img alt="../_images/events_6.jpg" src="../_images/events_6.jpg" />
+<p>Once Twilio gets your outbound response message, it will forward it back to the original sender, using the mobile number
+attached to the original message.</p>
+</div>
+<div class="section" id="recording-the-message">
+<h3>7. Recording the Message<a class="headerlink" href="#recording-the-message" title="Permalink to this headline">¶</a></h3>
+<img alt="../_images/events_7.jpg" src="../_images/events_7.jpg" />
+<p>Once the message has been validated, handled, and sent back, your worker dyno will record the completed event in Redis,
+as a backup record of what took place.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Application Landscape</a><ul>
+<li><a class="reference internal" href="#major-components">Major Components</a></li>
+<li><a class="reference internal" href="#distinct-events">Distinct Events</a><ul>
+<li><a class="reference internal" href="#an-sms-is-sent-to-a-twilio-number-or-shortcode">1. An SMS is sent to a Twilio number or shortcode</a></li>
+<li><a class="reference internal" href="#your-application-s-web-dyno-receives-the-twiml-message">2. Your application&#8217;s web dyno receives the TwiML message</a></li>
+<li><a class="reference internal" href="#queueing-the-message-for-your-worker-s">3. Queueing the message for your worker(s)</a></li>
+<li><a class="reference internal" href="#handling-messages">4. Handling messages</a></li>
+<li><a class="reference internal" href="#sending-back-twiml">5. Sending back TwiML</a></li>
+<li><a class="reference internal" href="#message-received">6. Message Received</a></li>
+<li><a class="reference internal" href="#recording-the-message">7. Recording the Message</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="previous chapter">Installation</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="messages.html"
+                        title="next chapter">Receiving Messages</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/doc_sections/landscape.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="messages.html" title="Receiving Messages"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installation"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyrowire 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Keith Hamilton.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

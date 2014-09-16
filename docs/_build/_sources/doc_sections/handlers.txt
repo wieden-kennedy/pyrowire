@@ -1,0 +1,61 @@
+
+Working with pyrowire Handlers
+==============================
+
+pyrowire uses the concept of message handlers in order to separate the logic for
+working with received messages from the core application layer. You can think of
+handlers as just methods that are specific to a message received for some SMS campaign.
+
+Application Topics
+------------------
+
+``pyrowire`` uses a topic-based approach to handling incoming messages. One ``pyrowire`` instance can scale to handle
+many, many different Twilio SMS applications, and separates logic for each by the use of topics. Each topic is
+considered to be a separate Twilio application, has its own definition in your config file, and has the endpoint:
+::
+
+    http(s)://my-rad-pyrowire-instance.mydomain.com/queue/topic
+
+where ``topic`` is a keyword of your choice that identifies messages as being for a specific application.
+
+Because ``pyrowire`` handles incoming messages, and can assign workers, on a per-topic basis, you could run as many
+different applications off of one cluster as you want, provided you scale up for it. Every time a message is received
+via Twilio's REST interface, it will be forwarded to your pyrowire instance, queued by its topic, then routed to,
+and processed by, a handler specifically designed for that topic/application. Business logic across applications can vary
+as much as you need it to, as each topic is handled by a different handler that you define.
+
+Now that you know about ``pyrowire``'s topic-based approach to separation of logic and scaling, let's get into how you
+process incoming messages.
+
+Defining a Handler
+------------------
+
+With ``pyrowire``, the only logic you need to think about (other than optional message validators), is your handler: what
+happens to the message after it's been successfully received.
+
+A handler is just a function that defines the business logic for your application, and is annotated
+``@pyrowire.handler(topic='whatever_topic_it_is_for')``, where 'whatever_topic_its_for' corresponds to a defined topic
+block in your `settings file <#settings-configuration>`_.
+
+Let's take a look at a very simple handler that just receives an incoming message, randomizes the order, then returns it:
+
+.. code:: python
+
+    # all app.handler methods need to be annotated with the topic for which they process
+    # and take one kwarg, 'message_data'
+    @pyrowire.handler(topic='sms_randomizer')
+    def my_handler(message_data=None):
+        import random
+        # randomize the message and save it as 'return_message'
+        message = message_data['message'].split()
+        random.shuffle(message)
+        message_data['reply'] = ' '.join(message)
+
+        # send the message data back along with the key of the message body
+        # to send to initiate a Twilio SMS reply
+        pyrowire.sms(message_data=message_data)
+
+As you can see, all we need to do to process and return a message is tell a method annotated with
+``@pyrowire.handler``(topic='my_topic_name')``  what to do with the message data that is received from the pyrowire app
+worker, then send it using ``pyrowire.sms`` method.  To use this method, we pass the message_data object back to the sms method. By default the key used to source the message to send is 'reply', but this can be changed by adding an optional kwarg, 'key'.
+

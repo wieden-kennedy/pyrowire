@@ -1,7 +1,12 @@
 pyrowire
 ========
 
-pyrowire is a framework you can use to quickly create Twilio-based SMS/MMS applications, licensed under the BSD 3-Clause license.
+You need to create an SMS application? F*@k yeah you do.
+pyrowire is a framework you can use to quickly create Twilio-based SMS/MMS applications.
+
+License
+=======
+pyrowire is licensed under the BSD 3-clause license, and can be viewed `here <https://github.com/wieden-kennedy/pyrowire/blob/master/LICENSE>`_.
 
 Quickstart
 ==========

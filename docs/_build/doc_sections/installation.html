@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation &mdash; pyrowire 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyrowire 1.0.0 documentation" href="../index.html" />
+    <link rel="next" title="Application Landscape" href="landscape.html" />
+    <link rel="prev" title="pyrowire 1.0.0" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="landscape.html" title="Application Landscape"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="pyrowire 1.0.0"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyrowire 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>pyrowire relies on a few underlying frameworks to run, but all you need to do install pyrowire. We recommend using
+pip/virtualenv, but there are a few other ways you can do this, depending on your inclinations.</p>
+<div class="section" id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="pip">
+<h3>pip<a class="headerlink" href="#pip" title="Permalink to this headline">¶</a></h3>
+<p>We lean heavily towards pip for installing virtualenv, since ultimately it is our preferred distribution method for pyrowire.
+Fortunately, installing pip is super easy.</p>
+</div>
+<div class="section" id="os-x">
+<h3>OS X<a class="headerlink" href="#os-x" title="Permalink to this headline">¶</a></h3>
+<p>If you are a Homebrew user, and have installed python with</p>
+<div class="highlight-python"><div class="highlight"><pre>$ brew install python
+</pre></div>
+</div>
+<p>you should already have pip on your machine. Otherwise, you can use easy_install:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ sudo easy_install pip
+</pre></div>
+</div>
+</div>
+<div class="section" id="linux">
+<h3>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h3>
+<p>To install pip on Linux, you can use the default package manager for your Linux flavor:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ sudo (yum|apt-get) install python-pip
+</pre></div>
+</div>
+</div>
+<div class="section" id="virtualenv">
+<h3>virtualenv<a class="headerlink" href="#virtualenv" title="Permalink to this headline">¶</a></h3>
+<p>virtualenv is a great tool for development, because it isolates python versions from the system python version. This is great
+for you because it means you can develop your python applications independent of each other, regardless of whether they
+require different versions of python and your application&#8217;s various dependencies.</p>
+</div>
+<div class="section" id="os-x-linux">
+<h3>OS X/Linux<a class="headerlink" href="#os-x-linux" title="Permalink to this headline">¶</a></h3>
+<p>Getting virtualenv installed is pretty straightforward, using either easy_install:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ sudo easy_install virtualenv
+</pre></div>
+</div>
+<p>or, with pip (our fav):</p>
+<div class="highlight-python"><div class="highlight"><pre>$ sudo pip install virtualenv
+</pre></div>
+</div>
+</div>
+<div class="section" id="redis">
+<h3>Redis<a class="headerlink" href="#redis" title="Permalink to this headline">¶</a></h3>
+<p>pyrowire currently has a hard dependency on Redis, so you will need to install that on your dev machine:</p>
+</div>
+<div class="section" id="id1">
+<h3>OS X<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Do it with Homebrew (if you don&#8217;t use Homebrew, you really should check it out):</p>
+<div class="highlight-python"><div class="highlight"><pre>$ brew install redis
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h3>Linux<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p><strong>Ubuntu/Debian</strong></p>
+<div class="highlight-python"><div class="highlight"><pre>$ sudo apt-get install redis-server
+</pre></div>
+</div>
+<p><strong>RHEL</strong></p>
+<div class="highlight-python"><div class="highlight"><pre>$ sudo yum install redis
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="installing-pyrowire">
+<h2>Installing pyrowire<a class="headerlink" href="#installing-pyrowire" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="via-pip">
+<h3>Via pip<a class="headerlink" href="#via-pip" title="Permalink to this headline">¶</a></h3>
+<p>Once you have the pip and virtualenv dependencies met, you are clear to install pyrowire. Our preferred method is via pip:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ mkdir my_pyrowire_project
+$ virtualenv my_pyrowire_project
+$ cd my_pyrowire_project &amp;&amp; source bin/activate
+$ pip install pyrowire
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-from-source">
+<h3>Installing from source<a class="headerlink" href="#installing-from-source" title="Permalink to this headline">¶</a></h3>
+<p>If you really want to download and install pyrowire, you are welcome to do that as well.
+Visit the <a class="reference external" href="https://github.com/wieden-kennedy/pyrowire/releases">release page</a>, and grab the latest version.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#dependencies">Dependencies</a><ul>
+<li><a class="reference internal" href="#pip">pip</a></li>
+<li><a class="reference internal" href="#os-x">OS X</a></li>
+<li><a class="reference internal" href="#linux">Linux</a></li>
+<li><a class="reference internal" href="#virtualenv">virtualenv</a></li>
+<li><a class="reference internal" href="#os-x-linux">OS X/Linux</a></li>
+<li><a class="reference internal" href="#redis">Redis</a></li>
+<li><a class="reference internal" href="#id1">OS X</a></li>
+<li><a class="reference internal" href="#id2">Linux</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installing-pyrowire">Installing pyrowire</a><ul>
+<li><a class="reference internal" href="#via-pip">Via pip</a></li>
+<li><a class="reference internal" href="#installing-from-source">Installing from source</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../index.html"
+                        title="previous chapter">pyrowire 1.0.0</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="landscape.html"
+                        title="next chapter">Application Landscape</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/doc_sections/installation.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="landscape.html" title="Application Landscape"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="pyrowire 1.0.0"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyrowire 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Keith Hamilton.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

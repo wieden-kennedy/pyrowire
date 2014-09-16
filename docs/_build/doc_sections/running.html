@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Running &mdash; pyrowire 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pyrowire 1.0.0 documentation" href="../index.html" />
+    <link rel="next" title="Tutorial" href="tutorial.html" />
+    <link rel="prev" title="Settings" href="settings.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="tutorial.html" title="Tutorial"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="settings.html" title="Settings"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">pyrowire 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="running">
+<h1>Running<a class="headerlink" href="#running" title="Permalink to this headline">¶</a></h1>
+<p>Once you have all your handlers, validators, and configuration vars in place, it&#8217;s time to get busy.</p>
+<div class="section" id="environment-variables">
+<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h2>
+<p>pyrowire requires one environment var to be present when running locally:</p>
+<ul class="simple">
+<li><strong>ENV</strong>: the run profile (DEV|STAGING|PROD) under which you want to run <tt class="docutils literal"><span class="pre">pyrowire</span></tt></li>
+</ul>
+<p>For running on Heroku, there are two additional environment vars required:</p>
+<ul class="simple">
+<li><strong>RUN</strong>: (web|worker), the type of Heroku dyno you are running.</li>
+<li><strong>TOPIC</strong>: only required for workers, this is the topic the specific worker should be working for.</li>
+</ul>
+<p>See <a class="reference external" href="#procfile">below</a> for more details.</p>
+</div>
+<div class="section" id="standalone-vs-web-vs-worker">
+<h2>Standalone vs Web vs Worker<a class="headerlink" href="#standalone-vs-web-vs-worker" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>pyrowire is designed to be able to run in one of three modes:</dt>
+<dd><ul class="first last simple">
+<li>standalone: In standalone mode, at least two threaded processes are started, one for the web application, and one worker process for each topic included in your settings file.</li>
+<li>web: In web mode, only the web application is started. This is most commonly used in Heroku deployment, and can be achieved by including <tt class="docutils literal"><span class="pre">RUN=WEB</span></tt> in your environment variables.</li>
+<li>worker: In worker mode, only a worker process is started. This also is most commonly used in Heroku deployment, and can be achieved by including both <tt class="docutils literal"><span class="pre">RUN=WORKER</span></tt> and <tt class="docutils literal"><span class="pre">TOPIC=[some-topic]</span></tt> in your environment variables.</li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="running-locally">
+<h2>Running Locally<a class="headerlink" href="#running-locally" title="Permalink to this headline">¶</a></h2>
+<p>Typically, when running locally, pyrowire will run in standalone mode.
+Once you have your handler, optional additional validator(s), and configuration all set up, running pyrowire is easy:</p>
+<div class="highlight-python"><div class="highlight"><pre>ENV=DEV python my_app.py
+</pre></div>
+</div>
+<p>This will spin up one worker for your topic (or one per topic if you have multiple topics configured),
+and a web server running on localhost:5000 to handle incoming messages. After that, you can start sending it GET/POST
+requests using your tool of choice. You won&#8217;t be able to use Twilio for inbound messages yet,
+(unless your local DNS name is published to the world) but you should receive them back from requests made locally.</p>
+</div>
+<div class="section" id="heroku">
+<h2>Heroku<a class="headerlink" href="#heroku" title="Permalink to this headline">¶</a></h2>
+<p>Right, so. When you are ready to move to staging or production, it&#8217;s time to get the app up into Heroku. Remember, the
+host setting should be <tt class="docutils literal"><span class="pre">0.0.0.0</span></tt> and the port setting for your profile should be <tt class="docutils literal"><span class="pre">0</span></tt> when deploying to Heroku.
+You can get through 90% of the work by running:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">pyrowire</span> <span class="o">--</span><span class="n">deploy</span><span class="o">-</span><span class="n">heroku</span>
+</pre></div>
+</div>
+<p>from the root of your project directory.</p>
+<p>This will walk you through logging into your Heroku account, if you haven&#8217;t already, setting up an app, if you haven&#8217;t already,
+and adding Redis as an addon, if you haven&#8217;t already. It will take you all the way to the point where you will just need to
+add any changes to git, commit, and push to Heroku.</p>
+<p>If you would like to set your Heroku stuff up manually, that&#8217;s totally up to you. We won&#8217;t get deep into how to manually
+deploy to Heroku here,  since it isn&#8217;t really in the scope of this document, but the basics are:</p>
+<ol class="arabic simple">
+<li>Set up a Heroku application with at least one web dyno and at least one worker.</li>
+<li>Set up a Redis database as a Heroku add-on, such as RedisToGo or RedisCloud, through a service, such as RedisLabs, or on an external server.</li>
+<li>Add the Redis host, port, database, and password information to your config file for Staging and/or Production profiles.</li>
+<li>Add the heroku remote git endpoint to your project (<tt class="docutils literal"><span class="pre">git</span> <span class="pre">remote</span> <span class="pre">add</span> <span class="pre">heroku.com:my-heroku-app.git</span></tt>).</li>
+<li>Push the project up to heroku and let it spin up.</li>
+<li>Add the remote endpoint to your Twilio account number (e.g., for SMS: <tt class="docutils literal"><span class="pre">http://my-heroku-app.herokuapp.com/queue/my_topic</span></tt>).</li>
+<li>Profit.</li>
+</ol>
+</div>
+<div class="section" id="procfile">
+<h2>Procfile<a class="headerlink" href="#procfile" title="Permalink to this headline">¶</a></h2>
+<p>When you ran <tt class="docutils literal"><span class="pre">pyrowire</span> <span class="pre">--init</span></tt> a sample Procfile was placed in the root of your application folder. Taking a look at it, you can see:</p>
+<div class="highlight-python"><div class="highlight"><pre>web: ENV=STAGING RUN=web python ./my_app.py --server run_gunicorn 0.0.0.0:$PORT --workers=1
+worker: ENV=STAGING RUN=worker TOPIC=my_topic python ./my_app.py
+</pre></div>
+</div>
+<p>You will need to include a <tt class="docutils literal"><span class="pre">RUN</span></tt> environment var set to either <tt class="docutils literal"><span class="pre">web</span></tt> or <tt class="docutils literal"><span class="pre">worker</span></tt> with respect to the purpose of the command item.</p>
+<p>For workers, a <tt class="docutils literal"><span class="pre">TOPIC</span></tt> environment var is required to indicate which topic the worker(s) should work for.
+You can see in the <tt class="docutils literal"><span class="pre">web</span></tt> line, the default setting in the Procfile is one worker. Scale as needed.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Running</a><ul>
+<li><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
+<li><a class="reference internal" href="#standalone-vs-web-vs-worker">Standalone vs Web vs Worker</a></li>
+<li><a class="reference internal" href="#running-locally">Running Locally</a></li>
+<li><a class="reference internal" href="#heroku">Heroku</a></li>
+<li><a class="reference internal" href="#procfile">Procfile</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="settings.html"
+                        title="previous chapter">Settings</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tutorial.html"
+                        title="next chapter">Tutorial</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/doc_sections/running.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="tutorial.html" title="Tutorial"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="settings.html" title="Settings"
+             >previous</a> |</li>
+        <li><a href="../index.html">pyrowire 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Keith Hamilton.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>
