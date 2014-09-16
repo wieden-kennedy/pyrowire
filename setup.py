@@ -32,12 +32,12 @@ setup(
     install_requires=['Flask', 'gunicorn', 'redis', 'twilio'],
     package_data={
         'pyrowire.resources.sample': ['my_settings.py', 'my_app.py', 'Procfile', 'requirements.txt'],
-        'pyrowire.console_scripts': ['console_scripts.py']
+        'pyrowire.resources.console_scripts': ['console_scripts.py']
     },
     data_files=[],
     entry_points={
         'console_scripts': [
-            'pyrowire-init=pyrowire.console_scripts.console_scripts:init',
+            'pyrowire=pyrowire.resources.console_scripts.console_scripts:main',
         ]
     }
 )
