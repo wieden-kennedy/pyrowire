@@ -37,10 +37,10 @@ PROFILES = {
         'debug': True,
         'log_level': logging.WARN,
         'redis': {
-            'host': 'localhost',
-            'port': 6379,
+            'host': '<staging.redis_host>',
+            'port': '<staging.redis_port',
             'db': 0,
-            'password': ''
+            'password': '<staging.redis_password>'
         },
         'host': '0.0.0.0',
         'port': 0
@@ -49,10 +49,10 @@ PROFILES = {
         'debug': False,
         'log_level': logging.ERROR,
         'redis': {
-            'host': 'localhost',
-            'port': 6379,
+            'host': '<prod.redis_host>',
+            'port': '<prod.redis_port>',
             'db': 0,
-            'password': ''
+            'password': '<prod.redis_password>'
         },
         'host': '0.0.0.0',
         'port': 0
