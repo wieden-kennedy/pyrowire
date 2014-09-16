@@ -6,6 +6,9 @@ pip/virtualenv, but there are a few other ways you can do this, depending on you
 
 Dependencies
 ------------
+
+-----
+
 pip
 ~~~
 We lean heavily towards pip for installing virtualenv, since ultimately it is our preferred distribution method for pyrowire.
@@ -84,6 +87,8 @@ Linux
 
 Installing pyrowire
 -------------------
+
+-----
 
 Via pip
 ~~~~~~~
