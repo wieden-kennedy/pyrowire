@@ -43,7 +43,7 @@ def max_message_length(topic=None):
     return PYROWIRE['topics'][topic]['max_message_length']
 
 def send_on_accept(topic=None):
-    return PYROWIRE['topics'][topic]
+    return PYROWIRE['topics'][topic]['send_on_accept']
 
 def accept_response(topic=None):
     return PYROWIRE['topics'][topic]['accept_response']
