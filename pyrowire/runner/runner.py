@@ -13,9 +13,9 @@ def run():
     and worker processes together for a standalone application server.
     """
     if 'RUN' in os.environ.keys():
-        if os.environ['RUN'] == 'web':
+        if os.environ['RUN'].lower() == 'web':
             server()
-        elif os.environ['RUN'] == 'worker':
+        elif os.environ['RUN'].lower() == 'worker':
             assert 'TOPIC' in os.environ.keys(), "You must provide a topic as an env var (TOPIC=my_topic)"
             work(topic=os.environ['TOPIC'])
     else:
