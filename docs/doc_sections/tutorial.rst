@@ -14,7 +14,7 @@ The application parameters:
 
 Installation
 ------------
-First thing is first. Let's install pyrowire in a virtualenv.
+Firstly, let's install pyrowire in a *virtualenv*.
 ::
 
     $ cd ~/src
@@ -38,19 +38,26 @@ We now have our stub files all set in the root of our project folder. Let's take
     import my_settings
 
     # configure the pyrowire application
-    pyrowire.configure(settings=my_settings)
+    pyrowire.configure(my_settings)
 
     # all app.processor methods need to be annotated with the topic for which they process
     # and take one kwarg, 'message_data'
     @pyrowire.handler(topic='my_topic')
-    def my_processor(message_data=None):
-        pass
+    def my_processor(message_data):
+        if not message_data:
+            raise TypeError("message_data must not be None")
+        # insert handler logic here
+        return message_data
 
     # all pyro.filter methods need to be annotated with the name of the filter
     # and take one kwarg, 'message_data'
     @pyrowire.validator(name='my_validator')
-    def my_filter(message_data=None):
-        pass
+    def my_filter(message_data):
+        if not message_data:
+            raise TypeError("message_data must not be None")
+        # insert validation logic here
+        # validators should try to prove that the message is invalid, i.e., return True
+        return True
 
     if __name__ == '__main__':
         pyrowire.run()
@@ -64,7 +71,10 @@ at how we could implement this:
 .. code:: python
 
     @pyrowire.handler(topic='yo_momma')
-    def yo_momma_handler(message_data=None):
+    def yo_momma_handler(message_data):
+        if not message_data:
+            raise TypeError("message_data must not be None")
+
         import urllib2
         import json
 
@@ -73,6 +83,8 @@ at how we could implement this:
 
         message_data['reply'] = json.loads(content)['joke']
         pyrowire.sms(message_data=message_data)
+
+        return message_data
 
 And that's it. The handler does a very simple thing; it fetches a response from api.yomomma.info, parses out the returned
 joke, attaches it to the original message_data object, then returns it as an SMS to the sender.
@@ -87,16 +99,22 @@ received says 'yo momma' and nothing else. Let's add a custom validator.
 .. code:: python
 
     @pyrowire.validator(name='yo_momma')
-    def yo_momma_validator(message_data=None):
+    def yo_momma_validator(message_data):
+        if not message_data:
+            raise TypeError("message_data must not be None")
+
         return not 'yo momma' == message_data['message'].lower().strip()
 
-Hmm...this will work, definitely. But, maybe it's too harsh. Let's back it up so that our custom validator just checks
+Hmm...this will work, but, maybe it's too harsh. Let's back it up so that our custom validator just checks
 to ensure that the phrase 'yo momma' is in the text body.
 
 .. code:: python
 
     @pyrowire.validator(name='yo_momma')
-    def yo_momma_validator(message_data=None):
+    def yo_momma_validator(message_data):
+        if not message_data:
+            raise TypeError("message_data must not be None")
+
         import re
         return not re.search(r'\byo momma\b', message_data['message'].lower().strip())
 
@@ -162,7 +180,7 @@ the ``my_settings.py`` file that we stubbed out earlier.
                 'password': ''
             },
             'host': 'localhost',
-            'port': 5000
+            'port': 62023
         },
         'staging': {
             'debug': True,
@@ -228,13 +246,8 @@ What changed?
 Cool, now that we've got our topic defined, we can move on to getting our profile/host settings dialed in, which incidentally,
 should be already done for our dev environment.
 
-**Related Sections**
-
------
-
-`Defining a Topic <./settings.html#defining-a-topic>`_
-
-`Twilio, Twilio, Twilio <./twilio.html>`_
+At this point you can also go back to your app file and remove the override on the profanity validator. Because we just
+removed it from the 'yo_momma' topic dictionary's 'validators' sub-dictionary, it won't apply to your incoming messages.
 
 Host Settings
 -------------
@@ -256,13 +269,13 @@ about the 'dev' settings for right now (we'll get to the staging/production sett
                 'password': ''
             },
             'host': 'localhost',
-            'port': 5000
+            'port': 62023
         },
         # staging, prod settings below
     }
 
-This should all look pretty straightforward. We are developing locally using the default Flask port,
-with a local, passwordless, Redis instance, and have debugging flags set to log at a debug level.
+This should all look pretty straightforward. We are developing locally using the port 62023,
+with a local, password-less, Redis instance, and have debugging flags set to log at a debug level.
 
 Running Locally
 ---------------
@@ -282,7 +295,7 @@ Next, run:
     $ ENV=DEV python my_app.py
 
 Note that you need to include the ENV environment var so pyrowire knows which profile to choose. Running the above command
-will spin up a web application on port 5000, and will spin up one worker per topic defined in your settings file (in the
+will spin up a web application on port 62023, and will spin up one worker per topic defined in your settings file (in the
 case of this tutorial, it should spin up one worker).
 
 In this example, we've omitted the ``RUN=(web|worker)`` environment variable, which causes both the web and worker
@@ -302,7 +315,7 @@ Cool, now pop open another terminal, and run the following, substituting your nu
 
 ::
 
-    curl -X GET http://127.0.0.1:5000/queue/yo_momma&From=+1234567890&Body=yo%20momma&MessageSid=testsid
+    curl -X GET http://127.0.0.1:62023/queue/yo_momma&From=+1234567890&Body=yo%20momma&MessageSid=testsid
 
 You should eventually see a returned message payload come through, and, if everything was set up correctly, your phone
 should have received a text message in the form of a yo momma joke.
@@ -335,4 +348,5 @@ This is fairly easy:
 
 Bombs Away
 ----------
-So now you have your Twilio endpoint set up, your application is running in Heroku, and you are ready...oh wait.
+So now you have your Twilio endpoint set up, your application is running in Heroku, and you are ready to drop some
+bombs on people's moms.

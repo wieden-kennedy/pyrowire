@@ -1,5 +1,11 @@
 Application Landscape
 =====================
+This section describes the general application landscape and event chain for pyrowire. You will note that in the flow
+presented below, Heroku is used as the deployment platform. This is the platform for which pyrowire was initially designed,
+but other platforms like AWS and Google Compute Engine could be used in place.
+
+Where you see *Heroku Web Dyno*, and *Heroku Worker Dyno*, you may mentally substitute them with, for example,
+*EC2 Web Application Server*, and *EC2 Worker Instance*, respectively.
 
 Major Components
 ----------------
@@ -45,10 +51,13 @@ are assigned to their respective topic.
 
 .. image:: ../_static/images/events_4.jpg
 
-This event is where the meat of the application resides. In this event, your worker dyno(s) will pop items off of their
-topic's queue, and do whatever you have defined should happen for the messages' respective topic. For instance, you may
- take the noun word parts out of the message and return the first image retrieved by a google image search on those words.
- Once your message handler has finished its work, it will typically sending the message back.
+This event is where the meat of the application resides. In this event, your worker dyno(s) will block-pop items off of their
+topic's queue, and do whatever you have defined should happen for the messages' respective topic.
+
+For instance, you may take the noun word parts out of the message and return the first image retrieved by a google
+image search on those words.
+
+Once your message handler has finished its work, it will typically sending the message back.
 
 5. Sending back TwiML
 ~~~~~~~~~~~~~~~~~~~~~
