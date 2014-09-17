@@ -6,6 +6,9 @@ you can do this, depending on your inclinations.
 
 Dependencies
 ------------
+
+-----
+
 pip
 ~~~
 
@@ -93,6 +96,8 @@ Linux
 
 Installing pyrowire
 -------------------
+
+-----
 
 Via pip
 ~~~~~~~
