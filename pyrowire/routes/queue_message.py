@@ -35,7 +35,7 @@ def queue(topic):
         # for each validator that is to be applied to the topic
         for name, func in [k for k in config.validators().items() if k[0] in config.validators(topic).keys()]:
             # run the message against the validator
-            message_invalid = func(message_data=message)
+            message_invalid = func(message)
             # if it fails to pass validation, get the error message, and return it to the SMS sender
             if message_invalid:
                 message['validator_error'] = config.validators(topic)[name]

@@ -7,13 +7,17 @@ import pyrowire.config.configuration as config
 
 # Twilio methods - SMS
 # ----------------------------------------------------------------------------------------------------------------------
-def sms(message_data=None, key='reply'):
+def sms(message_data, key='reply'):
     """
     wrapper function around the twilio.rest api to send a message
     :param message_data: the message data object containing the handled message information
     :param key: the key for the message data object that holds the final response
     :return: boolean, whether the twilio message was created successfully.
+    :raise e: TypeError if message_data is None
     """
+    if not message_data:
+        raise TypeError('message_data must not be None')
+
     logging.basicConfig(level=config.log_level())
     logger = logging.getLogger(__name__)
 
@@ -30,14 +34,18 @@ def sms(message_data=None, key='reply'):
         logger.error(e)
         return False
 
-def mms(message_data=None, include_text=False, text_key='reply', media_url=None):
+def mms(message_data, include_text=False, text_key='reply', media_url=None):
     """
     wrapper function around the twilio.rest api to send a message
     ** Currently only works with Short Codes in the US **
-    :param data: the message data object containing the handled message information
+    :param message_data: the message data object containing the handled message information
     :param key: the key for the message data object that holds the final response
     :return: boolean, whether the twilio message was created successfully.
+    :raise e: TypeError if message_data is None
     """
+    if not message_data:
+        raise TypeError('message_data must not be None')
+
     logging.basicConfig(level=config.log_level())
     logger = logging.getLogger(__name__)
 

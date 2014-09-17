@@ -8,10 +8,10 @@ from pyrowire import pyrowire as pyro
 from pyrowire.decorators.decorators import *
 from test import test_settings
 
-app = pyro.configure(settings=test_settings)
+app = pyro.configure(test_settings)
 
 @validator(name='must_say_yo')
-def must_say_yo(message_data=None):
+def must_say_yo(message_data):
     import re
     return not re.search(r'(yo)', message_data['message'].lower())
 

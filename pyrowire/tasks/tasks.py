@@ -37,12 +37,12 @@ def process_queue_item(topic=None, persist=True):
                 # insert the record for this job into the pending queue for this topic
                 redis.hset('%s.%s' % (topic, 'pending'), uuid, json.dumps(job_data))
                 # attempt to process the message
-                config.handler(topic)(message_data=job_data)
+                final_job_data = config.handler(topic)(job_data)
                 # add job to complete queue and remove from pending queue
                 redis.hdel('%s.%s' % (topic, 'pending'),
                            job_sid)
                 redis.hset('%s.%s' % (topic, 'complete'),
-                           job_sid, json.dumps(job_data))
+                           job_sid, json.dumps(final_job_data))
         except (ConnectionError, TimeoutError, IndexError, TypeError, KeyError), e:
             # if the error was not a redis connection or timeout error, log the error to redis
             # if the log to redis fails, let it go

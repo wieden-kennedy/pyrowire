@@ -9,7 +9,7 @@ from pyrowire.config import configuration as config
 from pyrowire.messaging.message import message_from_request
 from test import test_settings
 
-pyro.configure(settings=test_settings)
+pyro.configure(test_settings)
 
 class TestMessageQueue(unittest.TestCase):
     def setUp(self):

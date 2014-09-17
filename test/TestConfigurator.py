@@ -8,7 +8,7 @@ from test import test_settings
 class TestConfigurator(unittest.TestCase):
 
     def setUp(self):
-        pyro.configure(settings=test_settings)
+        pyro.configure(test_settings)
 
     def test_configuration(self):
         profile = test_settings.PROFILES[os.environ['ENV'].lower()]

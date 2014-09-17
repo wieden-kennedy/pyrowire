@@ -16,13 +16,18 @@ import pyrowire.tasks.tasks as tasks
 from test import test_settings
 
 
-pyrowire.configure(settings=test_settings)
+pyrowire.configure(test_settings)
 topic = 'sample'
 
 @handler(topic=topic)
-def my_processor(message_data=None):
-    message_data['final_data'] = message_data['message']
-    Process(target=sms.sms, kwargs={'data': message_data, 'key': 'final_data'}).start()
+def my_processor(message_data):
+    if not message_data:
+        raise TypeError('message_data must not be None')
+
+    message_data['reply'] = message_data['message']
+    Process(target=sms.sms, args=message_data).start()
+
+    return message_data
 
 class TestTasks(unittest.TestCase):
 
