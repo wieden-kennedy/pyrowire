@@ -12,9 +12,12 @@ from fabric.utils import abort
 
 def parse_args():
     parser = argparse.ArgumentParser(description="command line args to assist with development")
-    parser.add_argument('--init', dest='init', default=None, help='initialize stub files for pyrowire development')
-    parser.add_argument('--deploy-heroku', dest='deploy_heroku', default=None,
+    parser.add_argument('--init', dest='init', default=None, action='store_true',
+                        help='initialize stub files for pyrowire development')
+    parser.add_argument('--deploy-heroku', dest='deploy_heroku', action='store_true', default=None,
                         help='deploy current pyrowire project to heroku')
+    parser.add_argument('--add-heroku-redis', dest='add_heroku_redis', action='store_true', default=None,
+                        help='add redis to an existing heroku deployment')
     return parser.parse_args()
 
 
@@ -30,17 +33,29 @@ def init():
     copied_files = []
     # copy all files from sample folder
     for f in [x for x in os.listdir(source_path) if not re.match(r'^\.|^_|.*pyc$', x)]:
-        shutil.copy(os.path.join(source_path, file), os.path.join(current_path, f))
+        shutil.copy(os.path.join(source_path, f), os.path.join(current_path, f))
         copied_files.append(f)
 
     print '''\
     \n
-    Awesome. You now are ready to start using pyrowire. To get you started, we've copied the following
-    sample files into this folder:
+    P    Y    R    O    W    I    R    E
+    *^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*
+    *^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*
     \n
-    ''' + '\n\t'.join('* ./%s' % x for x in copied_files) + \
-          'For help on how to get started, check out the README at https://github.com/wieden-kennedy/pyrowire/'
+        Awesome. You now are ready to start using pyrowire.
+    To get you started, we've copied the following sample files into this folder:
+    \n\t
+    ''' + \
+    '\n    '.join('* ./%s' % x for x in copied_files) + \
+    '\n\n\n    For help on how to get started, check out the README at https://github.com/wieden-kennedy/pyrowire/\n' + \
+    '''
+    *^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*^*
+    \n
+    '''
 
+def check_git():
+    if not os.path.exists('.git'):
+        local('git init .')
 
 def install_heroku_toolbelt():
     is_installed = False
@@ -102,33 +117,42 @@ def heroku_select_or_create_app(account_name):
     return app
 
 
-def heroku_add_redis(app, account):
-    redis_host = 'barreleye.redistogo.com'
+def heroku_add_redis(app=None, account=None):
+    redis_host = None
     redis_port = 6379
     redis_password = None
     redis_db = 0
 
-    local('heroku addons:add --app %s --account %s redistogo:nano' % (app, account))
+    if not account:
+        account = heroku_select_account()
+    if not app:
+        app = heroku_select_or_create_app(account)
+
+    redis_exists = local('heroku addons --app %s --account %s' % (app, account), capture=True)
+    if not 'redistogo' in redis_exists:
+        local('heroku addons:add --app %s --account %s redistogo:nano' % (app, account))
+
     open_redis_details = prompt(_white("Would you like to open the addon's details in your browser now? [n] ")) or False
     if open_redis_details:
         prompted = prompt(_yellow("Once the redis details open, you will be prompted to enter some details. "
                                   "You can type 'q' at any time to cancel updating your application's Redis details."
                                   "Press Enter to open the Redis details page."))
         if prompted != 'q':
-            local('heroku addons:open --app %s --account %s redistogo:nano') % (app, account)
-            prompted = prompt(_white("Paste or type the Redis port number: "))
-        if prompted != 'q':
-            redis_port = int(prompted)
-            prompted = prompt(_white("Paste or type the Redis password: "))
-        if prompted != 'q':
+            local('heroku addons:open --app %s --account %s redistogo:nano' % (app, account))
+            prompted = prompt(_white("From the 'General' section, paste the name of the redis instance (like 'angelfish-9357')")) or None
+        if prompted and prompted != 'q':
+            host, redis_port = prompted.strip().split('-')
+            redis_host = '%s.redistogo.com' % host
+            prompted = prompt(_white("From the security section, paste the Redis password: ")) or None
+        if prompted and prompted != 'q':
             redis_password = prompted
 
     is_staging = prompt(_white("Which environment is this for?\n\t1. Staging\n\t2. Production\nSelection: "))
     profile = 'staging'
     if '2' in is_staging:
         profile = 'prod'
-    settings_file = [i for i in os.listdir('../') if re.search('settings', i) and not re.search(r'.*\.pyc$', i)][0]
-    settings_path = os.path.join('../', settings_file)
+    settings_file = [i for i in os.listdir('./') if re.search('settings', i) and not re.search(r'.*\.pyc$', i)][0]
+    settings_path = os.path.join('./', settings_file)
 
     f = open(settings_path, 'r')
     settings_lines = [
@@ -160,7 +184,9 @@ def heroku_deploy():
         add_redis = prompt(_white("Type 'y' to add Redis To Go to your Heroku application "
                                   "(to use an external service, update your settings file): ")) or None
         if add_redis.lower() == 'y':
-            heroku_add_redis(app_name, selected_account)
+            heroku_add_redis(app=app_name, account=selected_account)
+
+        check_git()
         # add git remote
         local('git remote add heroku heroku.com:%s.git' % app_name)
 
@@ -176,6 +202,8 @@ def main():
         init()
     elif args.deploy_heroku:
         heroku_deploy()
+    elif args.add_heroku_redis:
+        heroku_add_redis(app=None, account=None)
 
 
 
