@@ -27,7 +27,7 @@ def queue(topic):
     :return: string form of twiml response
     """
     message = message_from_request(request=request)
-    redis = Redis(config.redis('host'), config.redis('port'), config.redis('db'), config.redis('password'))
+    redis = Redis(config.redis('host'), int(config.redis('port')), int(config.redis('db')), config.redis('password'))
     response = twiml.Response()
     try:
         # validator block

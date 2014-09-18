@@ -23,7 +23,7 @@ def process_queue_item(topic=None, persist=True):
     logging.basicConfig(level=log_level)
     logger = logging.getLogger(__name__)
 
-    redis = Redis(config.redis('host'), config.redis('port'), config.redis('db'), config.redis('password'))
+    redis = Redis(config.redis('host'), int(config.redis('port')), int(config.redis('db')), config.redis('password'))
     job_data = None
     job_sid = None
 
