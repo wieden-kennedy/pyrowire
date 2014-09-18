@@ -38,7 +38,7 @@ PROFILES = {
         'log_level': logging.WARN,
         'redis': {
             'host': '<staging.redis_host>',
-            'port': '<staging.redis_port',
+            'port': '<staging.redis_port>',
             'db': 0,
             'password': '<staging.redis_password>'
         },
