@@ -18,8 +18,8 @@ In your virtual environment's root directory, execute:
 
 | This will install ``pyrowire``, and copy into the root folder the following files:
 
-* `my\_app.py <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/my_app.py>`_ (the application file)
-* `my\_settings.py <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/my_settings.py>`_ (the configuration file)
+* `app.py <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/app.py>`_ (the application file)
+* `settings.py <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/settings.py>`_ (the configuration file)
 * `Procfile <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/Procfile>`_ (a Heroku Procfile)
 * `requirements.txt <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/requirements.txt>`_ (pip requirements file)
 

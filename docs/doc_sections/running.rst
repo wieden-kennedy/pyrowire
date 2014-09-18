@@ -29,7 +29,7 @@ Once you have your handler, optional additional validator(s), and configuration 
 
 ::
 
-    ENV=DEV python my_app.py
+    ENV=DEV python app.py
 
 This will spin up one worker for your topic (or one per topic if you have multiple topics configured),
 and a web server running on localhost:62023 to handle incoming messages. After that, you can start sending it GET/POST
@@ -84,8 +84,8 @@ When you ran ``pyrowire --init`` a sample Procfile was placed in the root of you
 
 ::
 
-    web: ENV=STAGING RUN=web python ./my_app.py --server run_gunicorn 0.0.0.0:$PORT --workers=1
-    worker: ENV=STAGING RUN=worker TOPIC=my_topic python ./my_app.py
+    web: ENV=STAGING RUN=web python ./app.py --server run_gunicorn 0.0.0.0:$PORT --workers=1
+    worker: ENV=STAGING RUN=worker TOPIC=my_topic python ./app.py
 
 You will need to include a ``RUN`` environment var set to either ``web`` or ``worker`` with respect to the purpose of the command item.
 
@@ -96,7 +96,7 @@ If you would like to run pyrowire for more than one topic, you will need to add 
 
 ::
 
-    worker: ENV=STAGING RUN=worker TOPIC=my_topic python ./my_app.py
-    worker: ENV=STAGING RUN=worker TOPIC=my_other_topic python ./my_app.py
+    worker: ENV=STAGING RUN=worker TOPIC=my_topic python ./app.py
+    worker: ENV=STAGING RUN=worker TOPIC=my_other_topic python ./app.py
 
 

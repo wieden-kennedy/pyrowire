@@ -3,7 +3,7 @@ Settings
 Once you've got your validators and handlers set up, you'll need to dial in your settings file.
 
 pyrowire uses a python file for settings configuration. To check out the sample settings file, look
-`here <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/my_settings.py>`_.
+`here <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/settings.py>`_.
 
 pyrowire's settings files are broken down into two sections:
 

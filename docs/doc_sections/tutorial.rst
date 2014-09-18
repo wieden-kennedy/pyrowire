@@ -19,9 +19,9 @@ Firstly, let's install pyrowire in a *virtualenv*.
 
     $ cd ~/src
     $ mkdir yo_mamma
-    $ virtualenv yo_mamma
+    $ *virtualenv* yo_mamma
     $ cd yo_mamma && source bin/activate
-    $ pip install pyrowire
+    $ *pip* install pyrowire
 
 Generating Stub Files
 ---------------------
@@ -35,10 +35,10 @@ We now have our stub files all set in the root of our project folder. Let's take
 .. code:: python
 
     import pyrowire
-    import my_settings
+    import settings
 
     # configure the pyrowire application
-    pyrowire.configure(my_settings)
+    pyrowire.configure(settings)
 
     # all app.processor methods need to be annotated with the topic for which they process
     # and take one kwarg, 'message_data'
@@ -143,7 +143,7 @@ Settings
 --------
 Sweet, we are almost ready to run this sucker and start dropping momma jokes on people. We will need to dial in our
 settings file though, so it knows what to do when a message with the topic 'yo_momma' is received. To do that, we open
-the ``my_settings.py`` file that we stubbed out earlier.
+the ``settings.py`` file that we stubbed out earlier.
 
 .. code:: python
 
@@ -292,7 +292,7 @@ Next, run:
 
 ::
 
-    $ ENV=DEV python my_app.py
+    $ ENV=DEV python app.py
 
 Note that you need to include the ENV environment var so pyrowire knows which profile to choose. Running the above command
 will spin up a web application on port 62023, and will spin up one worker per topic defined in your settings file (in the

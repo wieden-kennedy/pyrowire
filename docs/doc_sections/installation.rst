@@ -9,7 +9,7 @@ Dependencies
 
 -----
 
-pip
+*pip*
 ~~~
 
 ----
@@ -29,7 +29,7 @@ you should already have *pip* on your machine. Otherwise, you can use easy_insta
 
 ::
 
-    $ sudo easy_install pip
+    $ sudo easy_install *pip*
 
 Linux
 ~~~~~
@@ -37,9 +37,9 @@ To install *pip* on Linux, you can use the default package manager for your Linu
 
 ::
 
-    $ sudo (yum|apt-get) install python-pip
+    $ sudo (yum|apt-get) install python-*pip*
 
-virtualenv
+*virtualenv*
 ~~~~~~~~~~
 
 ----
@@ -54,13 +54,13 @@ Getting *virtualenv* installed is pretty straightforward, using either easy_inst
 
 ::
 
-    $ sudo easy_install virtualenv
+    $ sudo easy_install *virtualenv*
 
 or, with *pip* (our fav):
 
 ::
 
-    $ sudo pip install virtualenv
+    $ sudo *pip* install *virtualenv*
 
 Redis
 ~~~~~
@@ -99,16 +99,16 @@ Installing pyrowire
 
 -----
 
-Via pip
+Via *pip*
 ~~~~~~~
 Once you have the *pip* and *virtualenv* dependencies met, you are clear to install pyrowire. Our preferred method is via *pip*:
 
 ::
 
     $ mkdir my_pyrowire_project
-    $ virtualenv my_pyrowire_project
+    $ *virtualenv* my_pyrowire_project
     $ cd my_pyrowire_project && source bin/activate
-    $ pip install pyrowire
+    $ *pip* install pyrowire
 
 
 Installing from source
