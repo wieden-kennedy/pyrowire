@@ -332,6 +332,15 @@ This will walk you through logging into your Heroku account, if you haven't alre
 and adding Redis as an addon, if you haven't already. It will take you all the way to the point where you will just need to
 add any changes to git, commit, and push to Heroku.
 
+Configuring Redis
+-----------------
+If you didn't initially set up a Redis addon in the above ``--deploy-heroku`` step, you can always go back later and do
+that by running:
+
+::
+
+    $ pyrowire --add-herkou-redis
+
 Configuring Twilio
 ------------------
 Once you've got your Heroku application set up, you will want to head back over to your Twilio account to set up the endpoint.
