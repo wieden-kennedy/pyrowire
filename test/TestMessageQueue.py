@@ -18,7 +18,7 @@ class TestMessageQueue(unittest.TestCase):
         self.inbound = '/queue/%s?Body=%s&From=+1234567890&MessageSid=%s&NumMedia=%s'
         self.sid = ''.join(random.choice(string.ascii_letters) for i in range(34))
 
-        self.redis = Redis(config.redis('host'), config.redis('port'), config.redis('db'), config.redis('password'))
+        self.redis = Redis(config.redis('host'), int(config.redis('port')), int(config.redis('db')), config.redis('password'))
 
     def tearDown(self):
         self.redis.delete('%s.submitted' % self.topic)

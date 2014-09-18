@@ -35,8 +35,8 @@ class TestTasks(unittest.TestCase):
         self.topic = topic
 
         self.redis = Redis(config.redis('host'),
-                           config.redis('port'),
-                           config.redis('db'),
+                           int(config.redis('port')),
+                           int(config.redis('db')),
                            config.redis('password'))
 
         self.redis.delete('%s.submitted' % self.topic)
