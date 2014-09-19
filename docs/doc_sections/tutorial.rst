@@ -303,22 +303,30 @@ processes to run at the same time. When we move to Heroku, or some other platfor
 so we can separate the work across nodes. We will cover running as web or worker in the Heroku section below.
 
 
+
 Sending a Test Message
 ----------------------
-We need to send three parameters to our endpoint, since we are emulating an actual Twilio message:
+For our test, we are going to do the following:
 
-    * **From**: the phone number from which the message was sent
-    * **Body**: the message body
-    * **MessageSid**: A unique 34-character string identifying the message resource
+    * run `ngrok <./doc_sections/installation.html#ngrok>`_ to get a public-facing URL for our local environment
+    * add the ngrok URL to Twilio
+    * send a test message
 
-Cool, now pop open another terminal, and run the following, substituting your number for the ``From`` value:
+First we need to run ngrok to get our public-facing URL. The default port that pyrowire is set up to run on is ``62023``.
+Open up a terminal prompt and run:
 
 ::
 
-    curl -X GET http://127.0.0.1:62023/queue/yo_momma&From=+1234567890&Body=yo%20momma&MessageSid=testsid
+    $ ngrok 62023
 
-You should eventually see a returned message payload come through, and, if everything was set up correctly, your phone
-should have received a text message in the form of a yo momma joke.
+Grab the forwarding http URL (the part before the ->), and copy it. Next, open up your Twilio account page. If you haven't
+set up a Twilio account yet, there's no time like the present. Head on over to the `Twilio website <https://www.twilio.com>`_
+to get started with that.
+
+See the section below called `Configuring Twilio <#configuring-twilio>`_ for steps on getting the endpoint added to your account.
+
+Lastly, it's time to send a test message. Grab your phone, and shoot a message to the number you used for your app endpoint in
+Twilio, and watch the magic happen.
 
 Deploying to Heroku
 -------------------
@@ -332,6 +340,20 @@ This will walk you through logging into your Heroku account, if you haven't alre
 and adding Redis as an addon, if you haven't already. It will take you all the way to the point where you will just need to
 add any changes to git, commit, and push to Heroku.
 
+Configuring Twilio
+------------------
+Once you've got your application set up, you will want to head back over to your Twilio account to set up the endpoint.
+This is fairly easy:
+
+1. Navigate to your `Twilio account page <https://www.twilio.com/user/account/>`_ then click the 'Numbers' link in the nav bar.
+
+.. image:: ../_static/images/twilio_numbers.jpg
+
+2. Click on the phone number you want to set up.
+3. Add the endpoint for your app, with the queue and topic name in the URL:
+
+.. image:: ../_static/images/test_url.jpg
+
 Configuring Redis
 -----------------
 If you didn't initially set up a Redis addon in the above ``--deploy-heroku`` step, you can always go back later and do
@@ -341,19 +363,6 @@ that by running:
 
     $ pyrowire --add-herkou-redis
 
-Configuring Twilio
-------------------
-Once you've got your Heroku application set up, you will want to head back over to your Twilio account to set up the endpoint.
-This is fairly easy:
-
-1. Navigate to your `Twilio account page <https://www.twilio.com/user/account/>`_ then click the 'Numbers' link in the nav bar.
-
-.. image:: ../_static/images/twilio_numbers.jpg
-
-2. Click on the phone number you want to set up.
-3. Add the endpoint to your Heroku app, with the queue and topic name in the URL:
-
-.. image:: ../_static/images/test_url.jpg
 
 Bombs Away
 ----------

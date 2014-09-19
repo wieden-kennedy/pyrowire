@@ -9,7 +9,7 @@ Dependencies
 
 -----
 
-*pip*
+pip
 ~~~
 
 ----
@@ -39,7 +39,7 @@ To install *pip* on Linux, you can use the default package manager for your Linu
 
     $ sudo (yum|apt-get) install python-*pip*
 
-*virtualenv*
+virtualenv
 ~~~~~~~~~~
 
 ----
@@ -91,6 +91,46 @@ Linux
 
     $ sudo yum install redis
 
+
+
+Optional dependencies
+---------------------
+Whereas you do not require the dependencies in this section, they may come in handy for testing/development.
+
+ngrok
+~~~~~
+
+----
+
+ngrok is a great tool for testing that forwards a public-facing URL to your local machine. This is great for testing your
+pyrowire app, since you can set your ngrok URL as your Twilio number's messaging endpoint and test your app without actually
+deploying to Heroku or another environment.
+
+OS X
+~~~~
+
+If you are Homebrew user, simply run:
+
+::
+
+    $ brew install ngrok
+
+If you don't use homebrew, you can download the binary `here <https://ngrok.com/download>`_ and run it as an executable.
+
+Linux
+~~~~~
+
+**Ubuntu/Debian**
+
+::
+
+    $ sudo apt-get install ngrok-server
+
+**RHEL**
+
+::
+
+    $ sudo yum install ngrok-server
 
 
 
