@@ -5,11 +5,11 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
-    long_description = f.read()
+   long_description = f.read()
 
 setup(
     name='pyrowire',
-    version='0.1.0',
+    version='0.8.0',
     description='Super-fast Twilio SMS response API',
     long_description=long_description,
     url='https://github.com/wieden-kennedy/pyrowire',
@@ -29,9 +29,9 @@ setup(
        ],
     keywords='api flask framework sms web messaging twilio redis',
     packages=find_packages(exclude=['contrib', 'docs', 'test*', 'bin', 'include', 'lib', '.idea']),
-    install_requires=['Flask', 'gunicorn', 'redis', 'twilio'],
+    install_requires=['Flask', 'gunicorn', 'redis', 'twilio', 'fabric'],
     package_data={
-        'pyrowire.resources.sample': ['my_settings.py', 'my_app.py', 'Procfile', 'requirements.txt'],
+        'pyrowire.resources.sample': ['settings.py', 'app.py', 'Procfile', 'requirements.txt'],
         'pyrowire.resources.console_scripts': ['console_scripts.py']
     },
     data_files=[],
