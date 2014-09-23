@@ -154,4 +154,5 @@ Once you have the *pip* and *virtualenv* dependencies met, you are clear to inst
 Installing from Source
 ~~~~~~~~~~~~~~~~~~~~~~
 If you really want to download and install pyrowire, you are welcome to do that as well.
-Visit the `release page <https://github.com/wieden-kennedy/pyrowire/releases>`_, and grab the latest version.
+Visit the `release page <https://github.com/wieden-kennedy/pyrowire/releases>`_, and grab the latest version, then
+just run ``python setup.py install`` to install it locally.
