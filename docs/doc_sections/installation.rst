@@ -151,7 +151,7 @@ Once you have the *pip* and *virtualenv* dependencies met, you are clear to inst
     $ *pip* install pyrowire
 
 
-Installing from source
+Installing from Source
 ~~~~~~~~~~~~~~~~~~~~~~
 If you really want to download and install pyrowire, you are welcome to do that as well.
 Visit the `release page <https://github.com/wieden-kennedy/pyrowire/releases>`_, and grab the latest version.

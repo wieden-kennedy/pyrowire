@@ -10,7 +10,7 @@ A handler is one of the fundamental building blocks of pyrowire. It is responsib
 an application, and determines how pyrowire will respond to an inbound message via Twilio's REST API. Applications and
 handlers have a unique one-to-one relationship.
 
-Handlers can be added by annotating a method with ``@pyrowire.handler(topic='some_topic_name'), where 'some_topic_name'
+Handlers can be added by annotating a method with ``@pyrowire.handler(topic='some_topic_name')``, where 'some_topic_name'
 corresponds to an application to be handled by pyrowire.
 
 Validator

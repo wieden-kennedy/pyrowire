@@ -2,7 +2,7 @@ Receiving Messages
 ==================
 
 pyrowire's primary object of note is a message. When an SMS (or MMS) is received by your application, pyrowire will construct a
-dictionary object from it, using most all available properties provided by the TwiML request body.
+dictionary object from it, using most of the properties provided by the TwiML request body.
 
 See `Anatomy of a Message <./doc_sections/appendices#appendix-b-the-anatomy-of-a-pyrowire-message>`_  for more information message properties.
 

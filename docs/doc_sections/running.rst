@@ -18,9 +18,12 @@ See `below <#procfile>`__ for more details.
 Standalone vs Web vs Worker
 ---------------------------
 pyrowire is designed to be able to run in one of three modes:
-  * **standalone**: In standalone mode, at least two threaded processes are started, one for the web application, and one worker process for each topic included in your settings file.
-  * **web**: In web mode, only the web application is started. This is most commonly used in Heroku deployment, and can be achieved by including ``RUN=WEB`` in your environment variables.
-  * **worker**: In worker mode, only a worker process is started. This also is most commonly used in Heroku deployment, and can be achieved by including both ``RUN=WORKER`` and ``TOPIC=[some-topic]`` in your environment variables.
+  * **standalone**: In standalone mode, at least two threaded processes are started, one for the web application,
+    and one worker process for each topic included in your settings file.
+  * **web**: In web mode, only the web application is started. This is most commonly used in Heroku deployment,
+    and can be achieved by including ``RUN=WEB`` in your environment variables.
+  * **worker**: In worker mode, only a worker process is started. This also is most commonly used in Heroku deployment,
+    and can be achieved by including both ``RUN=WORKER`` and ``TOPIC=[some-topic]`` in your environment variables.
 
 Running Locally
 ---------------
@@ -39,7 +42,7 @@ requests using your tool of choice. You won't be able to use Twilio for inbound 
 A Note on Deployment
 --------------------
 When we built pyrowire, we designed it to be deployed to Heroku; however, pyrowire could certainly be deployed to any
-hosted service where separation of concern is possible.
+hosted service, such as AWS or Google Compute Engine.
 
 For example, on AWS, pyrowire could easily be run as a set of three EC2 instances (minimally):
 
@@ -51,7 +54,7 @@ Again, we built it for Heroku, but with a little thought, it can be run anywhere
 
 Heroku Deployment
 -----------------
-When you are ready to move to staging or production, it's time to get the app up into Heroku. Remember, the
+When you are ready to move to staging or production, it's time to get the app installed on Heroku. Remember, the
 host setting should be ``0.0.0.0`` and the port setting for your profile should be ``0`` when deploying to Heroku.
 You can get through 90% of the work by running:
 
@@ -62,7 +65,7 @@ You can get through 90% of the work by running:
 from the root of your project directory.
 
 This will walk you through logging into your Heroku account, if you haven't already, setting up an app, if you haven't already,
-and adding Redis as an addon, if you haven't already. It will take you all the way to the point where you will just need to
+and adding Redis as an add-on, if you haven't already. It will take you all the way to the point where you will just need to
 add any changes to git, commit, and push to Heroku.
 
 Deploying to Heroku Manually

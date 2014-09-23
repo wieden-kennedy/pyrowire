@@ -10,9 +10,8 @@ Handlers
 --------
 
 With pyrowire, the only logic you need to think about (other than optional message validators), is what happens to the
-message after it's been successfully received. Enter the handler method.
-
-A handler is a function that defines the business logic for your application, and is annotated
+message after it's been successfully received. Enter the handler method, a function that defines the business logic for your application,
+and is annotated:
 
 ``@pyrowire.handler(topic='whatever_topic_it_is_for')``
 
@@ -67,7 +66,7 @@ Let's take a look at a very simple handler that just receives an incoming messag
 
 As you can see, all we need to do to process and return a message is tell a method annotated with
 ``@pyrowire.handler``(topic='my_topic_name')``  what to do with the message data that is received from the pyrowire app
-worker, then send it using ``pyrowire.sms`` method.  To use this method, we pass the message_data object back to the sms method.
+worker, then send it using ``pyrowire.sms`` method.  To use this method, we pass the message_data object back to the ``sms`` method.
 By default the key used to source the message to send is 'reply', but this can be changed by adding an optional kwarg, 'key'.
 
 See below, `Changing the Reply Key <#changing-the-reply-key>`_ for more information.

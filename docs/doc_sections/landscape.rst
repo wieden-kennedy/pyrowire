@@ -2,7 +2,7 @@ Application Landscape
 =====================
 This section describes the general application landscape and event chain for pyrowire. You will note that in the flow
 presented below, Heroku is used as the deployment platform. This is the platform for which pyrowire was initially designed,
-but other platforms like AWS and Google Compute Engine could be used in place.
+but other platforms like AWS and Google Compute Engine could be used in its place.
 
 Where you see *Heroku Web Dyno*, and *Heroku Worker Dyno*, you may mentally substitute them with, for example,
 *EC2 Web Application Server*, and *EC2 Worker Instance*, respectively.
@@ -20,7 +20,7 @@ Four major components are part of the pyrowire application landscape:
 
 Distinct Events
 ---------------
-The following seven distinct events describe most of what pyrowire is doing. For any further clarification needs, consult the source code.
+The following seven distinct events describe most of what pyrowire is doing. For further clarification, consult the source code.
 
 1. An SMS is sent to a Twilio number or shortcode
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,13 +51,13 @@ are assigned to their respective topic.
 
 .. image:: ../_static/images/events_4.jpg
 
-This event is where the meat of the application resides. In this event, your worker dyno(s) will block-pop items off of their
-topic's queue, and do whatever you have defined should happen for the messages' respective topic.
+This event is where the meat of the application resides, where your worker dyno(s) will block the thread and
+pop items off of their topic's queue, and do whatever you have defined should happen for the messages' respective topic.
 
-For instance, you may take the noun word parts out of the message and return the first image retrieved by a google
+For instance, you may take the nouns out of the message and return the first image retrieved by a Google
 image search on those words.
 
-Once your message handler has finished its work, it will typically sending the message back.
+Once your message handler has finished its work, it will typically send the message back.
 
 5. Sending back TwiML
 ~~~~~~~~~~~~~~~~~~~~~
@@ -67,7 +67,7 @@ Once your message handler has finished its work, it will typically sending the m
 pyrowire has built-in handlers for sending SMS and MMS messages, and it does so by constructing a TwiML message object via
 the Twilio REST API.
 
-6. Message Received
+6. Message received
 ~~~~~~~~~~~~~~~~~~~
 
 .. image:: ../_static/images/events_6.jpg
@@ -75,7 +75,7 @@ the Twilio REST API.
 Once Twilio gets your outbound response message, it will forward it back to the original sender, using the mobile number
 attached to the original message.
 
-7. Recording the Message
+7. Recording the message
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. image:: ../_static/images/events_7.jpg

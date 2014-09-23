@@ -8,7 +8,7 @@ who sends the initial text, because there is no excuse to not have a 'yo momma' 
 
 The application parameters:
     * Text 'yo momma' to some number
-    * Receive a 'yo momma' joke back.
+    * Receive a 'yo momma' joke back
     * No profanity validation required
     * Inbound message must say 'yo momma' at some point
 
@@ -156,7 +156,8 @@ the ``settings.py`` file that we stubbed out earlier.
             'error_response': 'It seems like an error has occurred...please try again later.',
             'validators': {
                 'profanity': 'You kiss your mother with that mouth? No profanity, please.',
-                'length': 'Your message exceeded the maximum allowable character limit (or was empty). Please try again .',
+                'length': 'Your message exceeded the maximum allowable character limit
+                           (or was empty). Please try again .',
                 'parseable': 'Please only use alphanumeric and punctuation characters.'
             },
             'properties': {},
@@ -208,7 +209,7 @@ the ``settings.py`` file that we stubbed out earlier.
         }
     }
 
-Ooh, looks like it's still got all the default settings, which is good.
+Ooh, looks like it still has all the default settings, which is good.
 Let's update the ``TOPICS`` section so it works for our application:
 
 .. code:: python
@@ -222,7 +223,8 @@ Let's update the ``TOPICS`` section so it works for our application:
             'error_response': 'It seems like an error has occurred...please try again later.',
             'validators': {
                 # removed the profanity validator, since we don't want to use it.
-                'length': 'Your message exceeded the maximum allowable character limit (or was empty). Please try again .',
+                'length': 'Your message exceeded the maximum allowable character limit
+                          (or was empty). Please try again .',
                 'parseable': 'Please only use alphanumeric and punctuation characters.'
             },
             'properties': {},
@@ -243,7 +245,7 @@ What changed?
     * we removed ``profanity`` from the list of validators for 'yo_momma'
     * we added Twilio information (this step is rather crucial)
 
-Cool, now that we've got our topic defined, we can move on to getting our profile/host settings dialed in, which incidentally,
+Cool, now that we have our topic defined, we can move on to getting our profile/host settings dialed in, which incidentally,
 should be already done for our dev environment.
 
 At this point you can also go back to your app file and remove the override on the profanity validator. Because we just

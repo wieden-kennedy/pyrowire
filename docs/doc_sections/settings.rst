@@ -1,13 +1,13 @@
 Settings
 ========
-Once you've got your validators and handlers set up, you'll need to dial in your settings file.
+Once you have your validators and handlers set up, you'll need to dial in your settings file.
 
 pyrowire uses a python file for settings configuration. To check out the sample settings file, look
 `here <https://github.com/wieden-kennedy/pyrowire/blob/master/pyrowire/resources/sample/settings.py>`_.
 
 pyrowire's settings files are broken down into two sections:
 
-- **Topics** (Twilio application-specific settings). The Topics block can have as many topic dictionaries are are needed.
+- **Topics** (Twilio application-specific settings). The Topics block can have as many topic dictionaries as are needed.
 - **Profiles** (environment profile-specific settings). There is one block per run environment *(DEV/STAGING/PROD)*
 
 Defining a Topic
@@ -73,8 +73,13 @@ Response Settings
     'accept_response': 'Great, we\'ll get right back to you.',
     'error_response': 'It seems like an error has occurred...please try again later.',
 
-    *  **send\_on\_accept** enables or disables your app from actually sending a reply message immediately after the incoming SMS was successfully accepted. Setting this to ``False`` will prevent your app from sending two return messages for every one it receives.
-    *  **accept\_response** and **error\_response** are respectively the messages that will be returned in the event of a success or error. *Note:* error\_response will always send if an error occurs.
+
+*  **send\_on\_accept** enables or disables your app from actually sending a reply message
+   immediately after the incoming SMS was successfully accepted. Setting this to ``False``
+   will prevent your app from sending two return messages for every one it receives.
+*  **accept\_response** and **error\_response** are respectively the messages that will be
+   returned in the event of a success or error.
+   *Note:* error\_response will always send if an error occurs.
 
 Validator Settings
 ~~~~~~~~~~~~~~~~~~
@@ -95,7 +100,7 @@ the user if his/her message fails to pass the validator.
         'parseable': 'Please only use alphanumeric and punctuation characters.'
     },
 
-It is in ``validators`` block that you would add any custom validators and their respective fail messages if you add validators to your
+It is in the ``validators`` block that you would add any custom validators and their respective fail messages if you add validators to your
 application. Remember, excluding a validator from an app config will cause it to not be used on any incoming messages for
 that application; this means you can selectively apply different validators to different applications.
 
@@ -197,10 +202,10 @@ Redis Settings
             'password': ''
         }
 
-First you have the standard Redis connection properties, ``host``, ``port``, ``database``, and ``password``. This
+First, you have the standard Redis connection properties, ``host``, ``port``, ``database``, and ``password``. This
 should be pretty straightforward...just add your connection details in this section.
 
-By default all profiles connect to localhost, over the standard Redis port, default database, with no password.
+By default, all profiles connect to localhost over the standard Redis port using the default database with no password.
 If a password is provided, it will be used, but ignored otherwise.
 
 
@@ -214,7 +219,7 @@ Host and Port Settings
         # set to 0 for hosted deployment so pyrowire can pick up the environment var $PORT
         'port': 62023
 
-Hosted deployment Settings
+Hosted Deployment Settings
 --------------------------
 Of note is that for a hosted deployment, you will want to set the port to ``0``, which tells pyrowire to set the port
 to the value of the web container's $PORT env var. Additionally, it is a good idea to set the host for any hosted
