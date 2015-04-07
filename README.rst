@@ -63,4 +63,6 @@ As you can see, it's rather straightforward; to start out you are given placehol
 The handler is where you will write the business logic for your Twilio application, and additional validators can be added
 if needed, or removed altogether. See their respective sections for more information.
 
+Documentation
+=============
 For full documentation and a tutorial, please visit our `documentation page <http://pyrowire.readthedocs.org>`_.
